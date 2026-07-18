@@ -1,0 +1,115 @@
+{% extends "_layout.html" %} {% block content %} {% if file %}
+<section>
+  <h2 class="text-slate-400 font-bold uppercase mb-2">Archivo procesado</h2>
+  <div class="w-full bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="fa-solid fa-file-excel text-emerald-600 text-2xl"></i>
+        <div>
+          <p class="font-bold text-slate-800 w-45 truncate">
+            {{ file.nombre }}
+          </p>
+          <p class="text-xs text-slate-500">
+            {{ file.registros|length }} items encontrados
+          </p>
+        </div>
+      </div>
+      <a href="/" class="text-xs text-red-500 font-semibold hover:underline"
+        >Eliminar</a
+      >
+    </div>
+  </div>
+</section>
+<section class="mt-5">
+  <h2 class="text-slate-400 font-bold uppercase mb-2">Resultado</h2>
+  <div class="flex flex-col gap-2 overflow-hidden">
+    {% for row in file.registros %}
+    <div
+      class="w-full bg-white border border-slate-200 rounded-lg p-5 shadow-sm mb-3"
+    >
+      <!-- Convertimos el contenedor en un label vinculado al checkbox -->
+      <label
+        for="check-{{ row.codigo }}"
+        class="flex items-center justify-between cursor-pointer"
+      >
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-box text-orange-600 text-2xl"></i>
+          <div>
+            <!-- El nombre del producto -->
+            <p class="font-bold text-slate-800 w-64 truncate">
+              {{ row.descripcion }}
+            </p>
+            <p class="text-xs text-slate-500">
+              Código: {{ row.codigo }} | Sugerencia: {{ row.cantidad }}
+            </p>
+          </div>
+        </div>
+        <!-- Añadimos el id único correspondiente al for del label -->
+        <input
+          type="checkbox"
+          id="check-{{ row.codigo }}"
+          name="items_seleccionados"
+          value="{{ row.codigo }}"
+          class="rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+        />
+      </label>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% else %}
+<form
+  id="uploadForm"
+  action="/upload"
+  method="POST"
+  enctype="multipart/form-data"
+  class="w-full flex flex-col"
+>
+  <input
+    type="file"
+    id="fileInput"
+    name="file"
+    accept=".xlsx, .csv"
+    class="hidden"
+  />
+
+  <div
+    id="dropzone"
+    onclick="document.getElementById('fileInput').click()"
+    class="flex flex-col items-center justify-center border-2 border-dashed border-slate-400 bg-slate-100 p-8 rounded-lg w-full mx-auto transition-all duration-200 hover:border-orange-500 hover:bg-orange-50 cursor-pointer group"
+  >
+    <span
+      class="text-3xl text-slate-500 group-hover:scale-110 group-hover:text-orange-500 transition-transform duration-200 mb-2"
+    >
+      <i class="fa-solid fa-file-arrow-up"></i>
+    </span>
+
+    <p
+      id="fileName"
+      class="text-slate-700 font-semibold text-base mb-1 text-center"
+    >
+      No hay información para procesar
+    </p>
+
+    <span class="text-sm font-medium text-slate-500">
+      Arrastra aquí tu archivo
+      <span class="font-bold text-slate-600">.xlsx</span> o
+      <span class="font-bold text-slate-600">.csv</span> (o haz clic)
+    </span>
+  </div>
+  <div>
+    <button
+      type="submit"
+      class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+    >
+      Procesar archivo
+    </button>
+    <!--  <button
+      type="button"
+      class="mt-4 w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+    >
+      Hacer una sola consulta
+    </button> -->
+  </div>
+</form>
+{% endif %} {% endblock %}

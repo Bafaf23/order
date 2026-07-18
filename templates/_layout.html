@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tailwind CSS v4 Browser Build -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- FontAwesome -->
+    <script
+      src="https://kit.fontawesome.com/a74559d35e.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Global CSS con url_for -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="{{ url_for('static', filename='favicon.svg') }}"
+    />
+    <title>{% block title %}Order{% endblock %}</title>
+  </head>
+  <body
+    class="bg-gray-100 min-h-screen max-w-xl mx-auto flex flex-col justify-between items-center py-6 px-4"
+  >
+    <header class="w-full flex flex-col justify-center items-start">
+      <div class="flex items-center gap-2">
+        <img
+          src="{{ url_for('static', filename='favicon.svg') }}"
+          alt="Logo de ORDER"
+          class="w-8 h-8 object-contain"
+        />
+        <h1 class="text-2xl font-bold tracking-wide text-slate-800">ORDER</h1>
+      </div>
+
+      <section class="mt-4 w-full">
+        <div
+          class="bg-gradient-to-r from-orange-500/15 to-amber-500/10 border-l-4 border-orange-500 p-4 rounded-r-lg shadow-sm"
+        >
+          <div class="flex items-start gap-3">
+            <span class="text-lg text-orange-600 mt-0.5 shrink-0">
+              <i class="fa-solid fa-circle-info"></i>
+            </span>
+
+            <div class="space-y-1">
+              <h2 class="text-base font-bold text-slate-800 leading-tight">
+                Una herramienta rápida, sencilla y segura
+              </h2>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                La información aquí procesada es 100% confidencial; bajo ninguna
+                forma se compartirá los datos suministrados por ti.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main class="w-full flex-1 flex flex-col my-6">
+      {% block content %} {% endblock %}
+    </main>
+
+    <footer
+      class="w-full text-center text-xs text-slate-400 flex items-center justify-between pt-4 border-t border-slate-200"
+    >
+      <p>
+        Desarrollado por
+        <a
+          href="https://www.instagram.com/bafaf03/"
+          target="_blank"
+          class="font-bold text-slate-600 hover:text-slate-800 hover:underline transition-colors"
+          rel="noopener noreferrer"
+          >Bryant Facenda</a
+        >
+      </p>
+      <button
+        type="button"
+        class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-3 py-1.5 rounded-md transition-colors shadow-sm cursor-pointer"
+      >
+        <i class="fa-regular fa-lightbulb mr-1.5"></i>
+        Sugerencia
+      </button>
+    </footer>
+  </body>
+</html>
