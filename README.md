@@ -1,4 +1,4 @@
-# ORDER ![ORDER Logo](./static/favicon.svg)
+# ORDER <img src="./static/favicon.svg" width="32" height="32" align="center" />
 
 ORDER es una herramineta web diseñada para automatizar la gestión de inventarios y la generación de órdenes de compra a partir del procesamiento de archivos de hojas de cálculo (Excel/CSV). El sistema analiza las existencias actuales frente a métricas de demanda para optimizar el reabastecimiento.
 
