@@ -20,6 +20,7 @@
     </div>
   </div>
 </section>
+
 <section class="mt-5">
   <h2 class="text-slate-400 font-bold uppercase mb-2">Resultado</h2>
   <div class="flex flex-col gap-2 overflow-hidden">
@@ -29,34 +30,33 @@
     >
       <!-- Convertimos el contenedor en un label vinculado al checkbox -->
       <label
-        for="check-{{ row.codigo }}"
+        for="check-{{ row.interno }}"
         class="flex items-center justify-between cursor-pointer"
       >
         <div class="flex items-center gap-3">
           <i class="fa-solid fa-box text-orange-600 text-2xl"></i>
           <div>
             <!-- El nombre del producto -->
+            <p class="text-slate-600 text-xs">Interno: {{ row.interno }}</p>
             <p class="font-bold text-slate-800 w-64 truncate">
               {{ row.descripcion }}
             </p>
             <p class="text-xs text-slate-500">
-              Código: {{ row.codigo }} | Sugerencia: {{ row.cantidad }}
+              Inventario: {{ row.cantidad }} | Venta Promedio:
+              {{row.venta_promedio}}
             </p>
           </div>
         </div>
         <!-- Añadimos el id único correspondiente al for del label -->
-        <input
-          type="checkbox"
-          id="check-{{ row.codigo }}"
-          name="items_seleccionados"
-          value="{{ row.codigo }}"
-          class="rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-        />
+        <div class="flex justify-between items-center">
+          <p class="text-2xl text-green-500 font-bold">{{row.sugerida}}</p>
+        </div>
       </label>
     </div>
     {% endfor %}
   </div>
 </section>
+
 {% else %}
 <form
   id="uploadForm"
@@ -79,6 +79,7 @@
     class="flex flex-col items-center justify-center border-2 border-dashed border-slate-400 bg-slate-100 p-8 rounded-lg w-full mx-auto transition-all duration-200 hover:border-orange-500 hover:bg-orange-50 cursor-pointer group"
   >
     <span
+      id="uploadIcon"
       class="text-3xl text-slate-500 group-hover:scale-110 group-hover:text-orange-500 transition-transform duration-200 mb-2"
     >
       <i class="fa-solid fa-file-arrow-up"></i>
@@ -91,25 +92,122 @@
       No hay información para procesar
     </p>
 
-    <span class="text-sm font-medium text-slate-500">
+    <span
+      id="uploadInstructions"
+      class="text-sm font-medium text-slate-500 text-center"
+    >
       Arrastra aquí tu archivo
       <span class="font-bold text-slate-600">.xlsx</span> o
       <span class="font-bold text-slate-600">.csv</span> (o haz clic)
     </span>
+
+    <!-- Botón local para quitar el archivo de la cola -->
+    <button
+      type="button"
+      id="btnResetFile"
+      class="hidden mt-3 text-xs font-semibold text-red-500 hover:underline z-10 relative"
+    >
+      Quitar archivo
+    </button>
   </div>
+
   <div>
     <button
       type="submit"
-      class="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+      id="btnSubmit"
+      disabled
+      class="mt-4 w-full bg-slate-300 text-slate-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed transition-colors"
     >
       Procesar archivo
     </button>
-    <!--  <button
-      type="button"
-      class="mt-4 w-full bg-amber-500 hover:bg-amber-400 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-    >
-      Hacer una sola consulta
-    </button> -->
   </div>
 </form>
+
+<script>
+  const fileInput = document.getElementById("fileInput");
+  const dropzone = document.getElementById("dropzone");
+  const fileName = document.getElementById("fileName");
+  const uploadIcon = document.getElementById("uploadIcon");
+  const uploadInstructions = document.getElementById("uploadInstructions");
+  const btnResetFile = document.getElementById("btnResetFile");
+  const btnSubmit = document.getElementById("btnSubmit");
+
+  // Detecta el cambio en el input (cuando seleccionan algo de forma puramente local)
+  fileInput.addEventListener("change", function () {
+    if (fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+
+      fileName.textContent = file.name;
+      uploadInstructions.innerHTML = `<span class="text-xs text-slate-400">Tamaño: ${(file.size / 1024).toFixed(1)} KB</span>`;
+
+      uploadIcon.innerHTML =
+        '<i class="fa-solid fa-file-circle-check text-orange-500"></i>';
+      dropzone.classList.replace("border-slate-400", "border-orange-500");
+      dropzone.classList.replace("bg-slate-100", "bg-orange-50");
+      btnResetFile.classList.remove("hidden");
+
+      btnSubmit.disabled = false;
+      btnSubmit.classList.replace("bg-slate-300", "bg-orange-500");
+      btnSubmit.classList.replace("text-slate-500", "text-white");
+      btnSubmit.classList.replace("cursor-not-allowed", "hover:bg-orange-600");
+    }
+  });
+
+  btnResetFile.addEventListener("click", function (e) {
+    e.stopPropagation();
+    fileInput.value = "";
+
+    fileName.textContent = "No hay información para procesar";
+    uploadInstructions.innerHTML =
+      'Arrastra aquí tu archivo <span class="font-bold text-slate-600">.xlsx</span> o <span class="font-bold text-slate-600">.csv</span> (o haz clic)';
+
+    uploadIcon.innerHTML = '<i class="fa-solid fa-file-arrow-up"></i>';
+    dropzone.classList.replace("border-orange-500", "border-slate-400");
+    dropzone.classList.replace("bg-orange-50", "bg-slate-100");
+    btnResetFile.classList.add("hidden");
+
+    btnSubmit.disabled = true;
+    btnSubmit.classList.replace("bg-orange-500", "bg-slate-300");
+    btnSubmit.classList.replace("text-white", "text-slate-500");
+    btnSubmit.classList.replace("hover:bg-orange-600", "cursor-not-allowed");
+  });
+
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropzone.addEventListener(
+      eventName,
+      (e) => {
+        e.preventDefault();
+        dropzone.classList.add("border-orange-500", "bg-orange-50");
+      },
+      false,
+    );
+  });
+
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropzone.addEventListener(
+      eventName,
+      (e) => {
+        e.preventDefault();
+        if (fileInput.files.length === 0) {
+          dropzone.classList.remove("border-orange-500", "bg-orange-50");
+        }
+      },
+      false,
+    );
+  });
+
+  dropzone.addEventListener(
+    "drop",
+    (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+
+        fileInput.dispatchEvent(new Event("change"));
+      }
+    },
+    false,
+  );
+</script>
 {% endif %} {% endblock %}

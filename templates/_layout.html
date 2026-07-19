@@ -28,9 +28,9 @@
     <title>{% block title %}Order{% endblock %}</title>
   </head>
   <body
-    class="bg-gray-100 min-h-screen max-w-xl mx-auto flex flex-col justify-between items-center py-6 px-4"
+    class="bg-gray-100 min-h-screen max-w-xl mx-auto flex flex-col justify-between items-center py-6 px-4 relative"
   >
-    <header class="w-full flex flex-col justify-center items-start">
+    <header class="w-full flex justify-between">
       <div class="flex items-center gap-2">
         <img
           src="{{ url_for('static', filename='favicon.svg') }}"
@@ -39,8 +39,43 @@
         />
         <h1 class="text-2xl font-bold tracking-wide text-slate-800">ORDER</h1>
       </div>
-
-      <section class="mt-4 w-full">
+      <nav>
+        <ul class="flex items-center gap-4">
+          <li>
+            <a
+              href="#"
+              class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors"
+            >
+              ¿Qué es ORDER?
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <!--Alert-->
+    <div class="max-w-7xl mx-auto px-6 mt-4 absolute" id="alert">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %} {% if category ==
+      'success' %}
+      <!-- Alerta Verde para éxitos -->
+      <div
+        class="flex items-center gap-3 p-4 mb-4 text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm"
+      >
+        <i class="fa-solid fa-circle-check text-xl text-emerald-600"></i>
+        <span class="text-sm font-medium">{{ message }}</span>
+      </div>
+      {% else %}
+      <!-- Alerta Roja para errores -->
+      <div
+        class="flex items-center gap-3 p-4 mb-4 text-rose-800 bg-rose-50 border border-rose-200 rounded-lg shadow-sm"
+      >
+        <i class="fa-solid fa-circle-exclamation text-xl text-rose-600"></i>
+        <span class="text-sm font-medium">{{ message }}</span>
+      </div>
+      {% endif %} {% endfor %} {% endif %} {% endwith %}
+    </div>
+    <main class="w-full flex-1 flex flex-col my-6">
+      <section class="w-full mb-5">
         <div
           class="bg-gradient-to-r from-orange-500/15 to-amber-500/10 border-l-4 border-orange-500 p-4 rounded-r-lg shadow-sm"
         >
@@ -61,9 +96,6 @@
           </div>
         </div>
       </section>
-    </header>
-
-    <main class="w-full flex-1 flex flex-col my-6">
       {% block content %} {% endblock %}
     </main>
 
@@ -89,4 +121,13 @@
       </button>
     </footer>
   </body>
+
+  <script>
+    setTimeout(() => {
+      const alert = document.getElementById("alert");
+      alert.style.transition = "opacity 0.5s ease";
+      alert.style.opacity = "0";
+      setTimeout(() => alert.remove(), 500);
+    }, 4000);
+  </script>
 </html>
