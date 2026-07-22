@@ -62,30 +62,35 @@ def upload_file():
                 return float(text)
 
             pre_sale = [
-                clane(row.get("SM1")),
-                clane(row.get("SM2")),
-                clane(row.get("SM3")),
-                clane(row.get("SM4")),
+                clane(row.get("SEM1")),
+                clane(row.get("SEM2")),
+                clane(row.get("SEM3")),
+                clane(row.get("SEM4")),
+                clane(row.get("SEM5")),
             ]
 
             # Variables para el calculo
             vp = average_weekly_sales(pre_sale)
             tr = float(row.get("Tiempo_Reposicion", row.get("tiempo_reposicion", 1)))
-            sa = float(row.get("Cantida en Mano", row.get("cantida en mano", 0)))
-            ss = float(row.get("Stock_Seguridad", row.get("stock_seguridad", 0)))
+            sa = float(row.get("I_NETO", row.get("cantida_en_mano", 0)))
+            ss = float(row.get("MIN", row.get("stock_seguridad", 0)))
+            pa = int(row.get("UXE", row.get("empaque", 1)))
 
-            final_amount = suggested(vp, tr, sa, ss)
+            final_amount = suggested(vp, tr, sa, ss, pa)
 
             register = {
-                "interno": str(row.get("interno", row.get("Interno", "N/A"))).strip(),
+                "interno": str(row.get("ITEM", row.get("interno", "N/A"))).strip(),
                 "descripcion": str(
-                    row.get("Descripción", row.get("descripcion", "Sin Nombre"))
+                    row.get("ITEM_LONG_DESC", row.get("descripcion", "Sin Nombre"))
                 ).strip(),
                 "cantidad": int(
-                    row.get("Cantidad en Mano", row.get("cantidad_en_mano", 0))
+                    row.get("I_NETO", row.get("cantidad_en_mano", 0))
                 ),
-                "sugerida": final_amount,
+                "sugerida_UXE": final_amount["cantidad"],
+                "sugerida_empaque": final_amount["empaque"],
                 "venta_promedio": vp,
+                "empaque": str(row.get("UXE", row.get("empaque", 1))),
+                "estatus": str(row.get("S", row.get("estatus", "C")))
             }
             register_proces.append(register)
 

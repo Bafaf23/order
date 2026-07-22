@@ -26,33 +26,81 @@
   <div class="flex flex-col gap-2 overflow-hidden">
     {% for row in file.registros %}
     <div
-      class="w-full bg-white border border-slate-200 rounded-lg p-5 shadow-sm mb-3"
+      class="w-full bg-white border border-slate-200 rounded-lg p-4 shadow-sm mb-3"
     >
-      <!-- Convertimos el contenedor en un label vinculado al checkbox -->
+      <!-- Label vinculado al checkbox -->
       <label
         for="check-{{ row.interno }}"
-        class="flex items-center justify-between cursor-pointer"
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
       >
-        <div class="flex items-center gap-3">
-          <i class="fa-solid fa-box text-orange-600 text-2xl"></i>
-          <div>
+        <div class="flex items-start gap-3">
+          <!-- Icono centrado superior en móvil -->
+          <i
+            class="fa-solid fa-box text-orange-600 text-xl sm:text-2xl mt-0.5"
+          ></i>
+
+          <div class="flex-1 min-w-0">
             <!-- El nombre del producto -->
-            <p class="text-slate-600 text-xs">Interno: {{ row.interno }}</p>
-            <p class="font-bold text-slate-800 w-64 truncate">
+            <p class="text-slate-600 text-[10px] sm:text-xs">
+              Interno: {{ row.interno }}
+            </p>
+
+            <!-- max-w-full evita que el texto rompa el contenedor en móviles -->
+            <p
+              class="font-bold text-slate-800 text-sm sm:text-base max-w-full sm:w-64 truncate"
+            >
               {{ row.descripcion }}
             </p>
-            <p class="text-xs text-slate-500">
-              Inventario: {{ row.cantidad }} | Venta Promedio:
-              {{row.venta_promedio}}
+
+            <!-- Datos de inventario distribuidos en bloques limpios para pantallas pequeñas -->
+            <p
+              class="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed"
+            >
+              <span class="inline-block sm:inline"
+                >Inv: <strong>{{ row.cantidad }}</strong></span
+              >
+              <span class="mx-1 text-slate-300">|</span>
+              <span class="inline-block sm:inline"
+                >Vta. Prom: <strong>{{ row.venta_promedio }}</strong></span
+              >
+              <span class="mx-1 text-slate-300">|</span>
+              <span class="inline-block sm:inline"
+                >Empaque: <strong>{{ row.empaque }}uds</strong></span
+              >
+              <span class="mx-1 text-slate-300">|</span>
+              <span class="inline-block sm:inline"
+                >Estatus: <strong>{{ row.estatus }}</strong></span
+              >
             </p>
           </div>
         </div>
-        <!-- Añadimos el id único correspondiente al for del label -->
-        <div class="flex justify-between items-center">
-          <p class="text-2xl text-green-500 font-bold">{{row.sugerida}}</p>
+
+        <!-- Contenedor del resultado: se alinea a la derecha en PC y abajo a la derecha en móvil -->
+        <div
+          class="flex justify-end items-center border-t border-slate-100 pt-2 sm:pt-0 sm:border-0 mt-1 sm:mt-0"
+        >
+          <div class="text-right">
+            <p class="text-xs text-slate-400 block sm:hidden">
+              Sugerido (Unidades / Cajas)
+            </p>
+            <div class="flex gap-2 justify-end">
+              <p
+                class="text-xl sm:text-2xl text-green-500 font-bold tracking-tight"
+              >
+                {{ row.sugerida_UXE }}
+              </p>
+              <span class="text-slate-400 font-normal text-lg">/</span>
+              <p
+                class="text-xl sm:text-2xl text-amber-500 font-bold tracking-tight"
+              >
+                {{ row.sugerida_empaque }}
+              </p>
+            </div>
+          </div>
         </div>
       </label>
     </div>
+
     {% endfor %}
   </div>
 </section>
