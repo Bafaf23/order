@@ -9,6 +9,9 @@
 - **Dashboard Reactivo:** Interfaz limpia construida con Tailwind CSS y componentes dinámicos en Jinja2.
 - **Lógica de Reorden:** Cálculo automatizado de sugerencias de compra basado en stock disponible y alertas de mínimos.
 
+## 🗃️ Archivo "analisi_oc"
+Este archivo es una guia para ayudater armar el documento de analisis para evitar error durante el analisis.
+
 ## 🛠️ Tecnologías Utilizadas
 
 - **Backend:** Python 3.11+ / Flask
