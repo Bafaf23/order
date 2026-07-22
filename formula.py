@@ -1,38 +1,42 @@
 import math
 
-def suggested(
-    average_sale: int,
-    replenishment_time: int,
-    current_stock: int,
-    safety_stock: int,
-    packing: int,
-) -> dict:
+
+def suggested(product_data: dict) -> dict:
     """
     Calcula la cantidad sugerida de compra para la orden de compra (OC).
 
     Args:
-        average_sale (int): Venta promedio del producto en un período.
-        replenishment_time (int): Tiempo que tarda el proveedor en entregar (en días o meses).
-        current_stock (int): Inventario físico actual en el almacén.
-        safety_stock (int): Stock de colchón para prevenir desabastecimiento.
-        packing (int): Cantida viene en el empaque.
+        product_data (dict): Diccionario con la información relevante al cálculo para generar el sugerido de compra.
+
+        Debe contener:
+
+        - "average_sale" (int): Venta promedio del producto en un período.
+        - "replenishment_time" (int): Tiempo que tarda el proveedor en entregar (en semanas).
+        - "current_stock" (int): Inventario físico actual en el almacén.
+        - "safety_stock" (int): Stock de colchón para prevenir desabastecimiento.
+        - "packing" (int): Cantidad que viene en el empaque.
 
     Returns:
         dict: Un diccionario con:
         - "cantidad" (int): Cantidad óptima en unidades a solicitar.
         - "empaque" (int): Cantidad de cajas/paquetes cerrados para el proveedor.
     """
+    average_sale: int = product_data["average_sale"]
+    replenishment_time: int = product_data["replenishment_time"]
+    current_stock: int = product_data["current_stock"]
+    safety_stock: int = product_data["safety_stock"]
+    packing: int = product_data["packing"]
 
     if average_sale is None or replenishment_time is None or current_stock is None:
         print("Sin datos para realizar el calculo")
         return {"cantidad": 0, "empaque": 0}
 
-    optimal_inventory = average_sale * replenishment_time + safety_stock
+    optimal_inventory = (average_sale * replenishment_time) + safety_stock
 
     result = optimal_inventory - current_stock
 
-    if result < 0:
-        return 0
+    if result <= 0:
+        return {"cantidad": 0, "empaque": 0}
 
     necessary_packages = math.ceil(result / packing)
 
@@ -58,4 +62,6 @@ def average_weekly_sales(sales_week: list) -> int:
         print("Ventas vacias")
         raise ValueError("La lista de ventas no puede eatar vacía.")
 
-    return int(sum(sales_week) / len(sales_week))
+    average_sale = int(sum(sales_week) / len(sales_week))
+    print(f"Pormedio venta: {average_sale}")
+    return average_sale
