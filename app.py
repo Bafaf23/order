@@ -13,7 +13,7 @@ ALLOWED_EXTENSIONS = {".xlsx", ".xls", "csv"}
 @app.route("/")
 def home():
     """Ruta index de app"""
-    return render_template("index.djhtml")
+    return render_template("index.html")
 
 
 @app.route("/upload", methods=["POST"])
