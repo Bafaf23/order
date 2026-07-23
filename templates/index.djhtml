@@ -1,4 +1,7 @@
-{% extends "_layout.html" %} {% block content %} {% if file %}
+{% extends "_layout.html" %} 
+
+{% block content %} 
+{% if file %}
 <section>
   <h2 class="text-slate-400 font-bold uppercase mb-2">Archivo procesado</h2>
   <div class="w-full bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
