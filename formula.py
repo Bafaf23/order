@@ -46,7 +46,7 @@ def suggested(product_data: dict) -> dict:
     }
 
 
-def average_weekly_sales(sales_week: list) -> float:
+def average_weekly_sales(sales_week: list) -> int:
     """Calcula el promedio de la venta semanales de un producto.
     Tomo una lista con las ventas de toda una semana y retorna un resultado redondeado.
 
@@ -54,7 +54,7 @@ def average_weekly_sales(sales_week: list) -> float:
         sales_week (list): Una lista de numeros que representan las ventas semanales.
 
     Returns:
-        int: el promedio de ventas expresado con un numero entero.
+        round: el promedio de ventas expresado con un numero entero.
 
     Raises:
         ValueError: Si la lista `sales_week` está vacía.
@@ -65,6 +65,6 @@ def average_weekly_sales(sales_week: list) -> float:
         print("Ventas vacias")
         raise ValueError("La lista de ventas no puede eatar vacía.")
 
-    average_sale = round(sum(sales_week) / len(sales_week), 2)
+    average_sale = round(sum(sales_week) / len(sales_week))
     print(f"Pormedio venta: {average_sale}")
     return round(average_sale)
