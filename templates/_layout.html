@@ -26,6 +26,7 @@
       href="{{ url_for('static', filename='favicon.svg') }}"
     />
     <title>{% block title %}Order{% endblock %}</title>
+    
   </head>
   <body
     class="bg-gray-100 min-h-dvh max-w-xl mx-auto flex flex-col justify-between items-center py-6 px-4 relative"
@@ -42,43 +43,48 @@
       <nav>
         <ul class="flex items-center gap-4">
           <li>
-            <a
-              href="#"
+            <button
+              id="openModal"
               class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors"
             >
               ¿Qué es ORDER?
-            </a>
+            </button>
+            <li class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">
+              <a download href="{{url_for('static', filename='docs/analisis_OC.xlsx')}}">
+                Descargar guia
+              </a>
+            </li>
           </li>
         </ul>
       </nav>
     </header>
+    
     <!--Alert-->
     <div class="max-w-7xl mx-auto px-6 mt-4 absolute" id="alert">
-      {% with messages = get_flashed_messages(with_categories=true) %} {% if
-      messages %} {% for category, message in messages %} {% if category ==
-      'success' %}
-      <!-- Alerta Verde para éxitos -->
-      <div
-        class="flex items-center gap-3 p-4 mb-4 text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm"
-      >
-        <i class="fa-solid fa-circle-check text-xl text-emerald-600"></i>
-        <span class="text-sm font-medium">{{ message }}</span>
-      </div>
-      {% else %}
-      <!-- Alerta Roja para errores -->
-      <div
-        class="flex items-center gap-3 p-4 mb-4 text-rose-800 bg-rose-50 border border-rose-200 rounded-lg shadow-sm"
-      >
-        <i class="fa-solid fa-circle-exclamation text-xl text-rose-600"></i>
-        <span class="text-sm font-medium">{{ message }}</span>
-      </div>
-      {% endif %} {% endfor %} {% endif %} {% endwith %}
+      {% with messages = get_flashed_messages(with_categories=true) %} 
+        {% if messages %} 
+          {% for category, message in messages %} 
+            {% if category == 'success' %}
+              <!-- Alerta Verde para éxitos -->
+              <div class="flex items-center gap-3 p-4 mb-4 text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm">
+                <i class="fa-solid fa-circle-check text-xl text-emerald-600"></i>
+                <span class="text-sm font-medium">{{ message }}</span>
+              </div>
+            {% else %}
+              <!-- Alerta Roja para errores -->
+              <div class="flex items-center gap-3 p-4 mb-4 text-rose-800 bg-rose-50 border border-rose-200 rounded-lg shadow-sm">
+                <i class="fa-solid fa-circle-exclamation text-xl text-rose-600"></i>
+                <span class="text-sm font-medium">{{ message }}</span>
+              </div>
+            {% endif %} 
+          {% endfor %} 
+        {% endif %} 
+      {% endwith %}
     </div>
+    {% include "page/_modal.html" %}
     <main class="w-full flex-1 flex flex-col my-6">
       <section class="w-full mb-5">
-        <div
-          class="bg-linear-to-r from-orange-500/15 to-amber-500/10 border-l-4 border-orange-500 p-4 rounded-r-lg shadow-sm"
-        >
+        <div class="bg-linear-to-r from-orange-500/15 to-amber-500/10 border-l-4 border-orange-500 p-4 rounded-r-lg shadow-sm">
           <div class="flex items-start gap-3">
             <span class="text-lg text-orange-600 mt-0.5 shrink-0">
               <i class="fa-solid fa-circle-info"></i>
@@ -99,9 +105,7 @@
       {% block content %} {% endblock %}
     </main>
 
-    <footer
-      class="w-full text-center text-xs text-slate-400 flex items-center justify-between pt-4 border-t border-slate-200"
-    >
+    <footer class="w-full text-center text-xs text-slate-400 flex items-center justify-between pt-4 border-t border-slate-200">
       <p>
         Desarrollado por
         <a
@@ -120,14 +124,22 @@
         Sugerencia
       </button>
     </footer>
-  </body>
 
-  <script>
-    setTimeout(() => {
-      const alert = document.getElementById("alert");
-      alert.style.transition = "opacity 0.5s ease";
-      alert.style.opacity = "0";
-      setTimeout(() => alert.remove(), 500);
-    }, 4000);
-  </script>
+    <!-- ==================== SECCIÓN DE SCRIPTS ==================== -->
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    
+    <script>
+      setTimeout(() => {
+        const alert = document.getElementById("alert");
+        if (alert) {
+          alert.style.transition = "opacity 0.5s ease";
+          alert.style.opacity = "0";
+          setTimeout(() => alert.remove(), 500);
+        }
+      }, 4000);
+    </script>
+
+    {% block scripts %}{% endblock %}
+  </body>
 </html>
