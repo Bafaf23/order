@@ -1,0 +1,23 @@
+<!-- El contenedor del fondo empieza invisible (opacity-0) y bloqueado (pointer-events-none) -->
+<div id="miModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+    
+    <!-- Fondo oscuro -->
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"></div>
+    
+    <!-- Contenedor del contenido: Empieza un poco abajo (translate-y-4) y encogido (scale-95) -->
+    <div id="modalContenido" class="relative bg-white rounded-xl shadow-xl max-w-md w-full p-6 z-10 transform transition-all duration-300 scale-95 translate-y-4">
+        
+        <!-- Encabezado -->
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-slate-800">¿Qué es ORDER?</h3>
+            <button id="closeModal" class="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        
+        <!-- Cuerpo -->
+        <p class="text-sm text-slate-600 leading-relaxed">
+            Es una herramineta web diseñada para automatizar la gestión de inventarios y la generación de órdenes de compra a partir del procesamiento de archivos de hojas de cálculo (Excel/CSV). El sistema analiza las existencias actuales frente a métricas de demanda para optimizar el reabastecimiento.
+        </p>
+    </div>
+</div>
