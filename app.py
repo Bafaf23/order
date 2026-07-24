@@ -58,7 +58,7 @@ def upload_file():
             if text in ["", "None", "nan", "NaN"]:
                 return 0.0
 
-            return int(float(text))
+            return float(text)
 
         for _, row in df.iterrows():
 
