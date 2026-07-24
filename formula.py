@@ -21,11 +21,11 @@ def suggested(product_data: dict) -> dict:
         - "cantidad" (int): Cantidad óptima en unidades a solicitar.
         - "empaque" (int): Cantidad de cajas/paquetes cerrados para el proveedor.
     """
-    average_sale: int = product_data["average_sale"]
-    replenishment_time: int = product_data["replenishment_time"]
-    current_stock: int = product_data["current_stock"]
-    safety_stock: int = product_data["safety_stock"]
-    packing: int = product_data["packing"]
+    average_sale: float = product_data["average_sale"]
+    replenishment_time: float = product_data["replenishment_time"]
+    current_stock: float = product_data["current_stock"]
+    safety_stock: float = product_data["safety_stock"]
+    packing: float = product_data["packing"]
 
     if average_sale is None or replenishment_time is None or current_stock is None:
         print("Sin datos para realizar el calculo")
@@ -40,7 +40,10 @@ def suggested(product_data: dict) -> dict:
 
     necessary_packages = math.ceil(result / packing)
 
-    return {"cantidad": necessary_packages * packing, "empaque": necessary_packages}
+    return {
+        "cantidad": int(necessary_packages * packing),
+        "empaque": necessary_packages,
+    }
 
 
 def average_weekly_sales(sales_week: list) -> float:
@@ -62,6 +65,6 @@ def average_weekly_sales(sales_week: list) -> float:
         print("Ventas vacias")
         raise ValueError("La lista de ventas no puede eatar vacía.")
 
-    average_sale = float(sum(sales_week) / len(sales_week))
+    average_sale = round(sum(sales_week) / len(sales_week), 2)
     print(f"Pormedio venta: {average_sale}")
-    return average_sale
+    return round(average_sale)
