@@ -45,21 +45,22 @@ def upload_file():
         df.fillna("", inplace=True)
 
         register_proces = []
+
+        def clane(value: str) -> float:
+            """Limpia un text para trasformarlo a numero
+            Args:
+                value (str): valor para limpiar y convertir
+            Returns:
+                int: value formateado
+            """
+            text = str(value).strip()
+
+            if text in ["", "None", "nan", "NaN"]:
+                return 0.0
+
+            return int(float(text))
+
         for _, row in df.iterrows():
-
-            def clane(value: str) -> int:
-                """Limpia un text para trasformarlo a numero
-                Args:
-                    value (str): valor para limpiar y convertir
-                Returns:
-                    int: value formateado
-                """
-                text = str(value).strip()
-
-                if text in ["", "None", "nan", "NaN"]:
-                    return 0
-
-                return float(text)
 
             pre_sale = [
                 clane(row.get("SEM1")),
@@ -75,7 +76,9 @@ def upload_file():
                 "replenishment_time": int(
                     row.get("Tiempo_Reposicion", row.get("tiempo_reposicion", 1))
                 ),
-                "current_stock": int(row.get("I_NETO", row.get("cantidad_en_mano", 0))),
+                "current_stock": int(
+                    float(row.get("I_NETO", row.get("cantidad_en_mano", 0)))
+                ),
                 "safety_stock": int(row.get("MIN", row.get("stock_seguridad", 0))),
                 "packing": int(row.get("UXE", row.get("empaque", 1))),
             }
@@ -87,7 +90,7 @@ def upload_file():
                 "descripcion": str(
                     row.get("ITEM_LONG_DESC", row.get("descripcion", "Sin Nombre"))
                 ).strip(),
-                "cantidad": int(row.get("I_NETO", row.get("cantidad_en_mano", 0))),
+                "cantidad": str(row.get("I_NETO", row.get("cantidad_en_mano", 0))),
                 "sugerida_UXE": final_amount["cantidad"],
                 "sugerida_empaque": final_amount["empaque"],
                 "venta_promedio": average_weekly_sales(pre_sale),
