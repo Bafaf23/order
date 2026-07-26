@@ -21,15 +21,20 @@ def suggested(product_data: dict) -> dict:
         - "cantidad" (float): Cantidad óptima en unidades a solicitar.
         - "empaque" (float): Cantidad de cajas/paquetes cerrados para el proveedor.
     """
-    average_sale: float = product_data.get("average_sale") / 7
+    raw_average_sale: float = product_data.get("average_sale")
     replenishment_time: float = product_data.get("replenishment_time")
     current_stock: float = product_data.get("current_stock")
-    safety_stock: float = product_data.get("safety_stock")
     packing: float = product_data.get("packing", 1)
 
-    if average_sale is None or replenishment_time is None or current_stock is None:
+    if raw_average_sale is None or replenishment_time is None or current_stock is None:
         print("Sin datos para realizar el calculo")
         return {"cantidad": 0, "empaque": 0}
+
+    # venta diaria
+    average_sale: float = raw_average_sale / 7
+
+    # stock de seguridad
+    safety_stock: float = average_sale * replenishment_time
 
     optimal_inventory = (average_sale * replenishment_time) + safety_stock
 
@@ -40,13 +45,15 @@ def suggested(product_data: dict) -> dict:
 
     necessary_packages = math.ceil(result / packing)
 
+    print(f"Stock de seguridad calculado: {safety_stock:.2f}")
+
     return {
         "cantidad": int(necessary_packages * packing),
         "empaque": necessary_packages,
     }
 
 
-def average_weekly_sales(sales_week: list) -> int:
+def average_weekly_sales(sales_week: list) -> float:
     """Calcula el promedio de la venta semanales de un producto.
     Tomo una lista con las ventas de toda una semana y retorna un resultado redondeado.
 
@@ -54,7 +61,7 @@ def average_weekly_sales(sales_week: list) -> int:
         sales_week (list): Una lista de numeros que representan las ventas semanales.
 
     Returns:
-        round: el promedio de ventas expresado con un numero entero.
+        float: el promedio de ventas expresado con un numero entero del mes.
 
     Raises:
         ValueError: Si la lista `sales_week` está vacía.
@@ -66,5 +73,7 @@ def average_weekly_sales(sales_week: list) -> int:
         raise ValueError("La lista de ventas no puede eatar vacía.")
 
     average_sale = sum(sales_week) / len(sales_week)
-    print(f"Pormedio venta: {average_sale}")
+
+    print(f"Promedio de venta semanal: {average_sale:.2f}")
+
     return average_sale
