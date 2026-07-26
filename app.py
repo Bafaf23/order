@@ -79,7 +79,6 @@ def upload_file():
                 "current_stock": float(
                     float(row.get("I_NETO", row.get("cantidad_en_mano", 0)))
                 ),
-                "safety_stock": float(row.get("MIN", row.get("stock_seguridad", 0))),
                 "packing": float(row.get("UXE", row.get("empaque", 1))),
             }
 
