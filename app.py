@@ -9,11 +9,13 @@ app.secret_key = os.environ.get("SECRET", "ORDER_S")
 # Extenciones de archivos permitdas
 ALLOWED_EXTENSIONS = {".xlsx", ".xls", "csv"}
 
+version = "1.0.0"
+
 
 @app.route("/")
 def home():
     """Ruta index de app"""
-    return render_template("index.html")
+    return render_template("index.html", version=version)
 
 
 @app.route("/upload", methods=["POST"])
@@ -100,7 +102,7 @@ def upload_file():
 
         file_uploaded = {"nombre": file.filename, "registros": register_proces}
         flash("¡Inventario cargado y analizado con éxito!", "success")
-        return render_template("index.html", file=file_uploaded)
+        return render_template("index.html", file=file_uploaded, version=version)
     except Exception as e:
         print(f"Error procesando el archivo {str(e)}")
         flash(
