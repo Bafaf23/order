@@ -31,7 +31,7 @@
   <body
     class="bg-gray-100 min-h-dvh max-w-xl mx-auto flex flex-col justify-between items-center py-6 px-4 relative"
   >
-    <header class="w-full flex justify-between">
+    <header class="w-full flex flex-col md:flex-row md:justify-between">
       <div class="flex items-center gap-2">
         <img
           src="{{ url_for('static', filename='favicon.svg') }}"
@@ -49,7 +49,7 @@
         </div>
       </div>
       <nav>
-        <ul class="flex items-center gap-4">
+        <ul class="flex items-center justify-center gap-4 mt-2 md:mt-0">
           <li>
             <button
               id="openModal"
