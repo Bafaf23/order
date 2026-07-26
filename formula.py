@@ -10,22 +10,22 @@ def suggested(product_data: dict) -> dict:
 
         Debe contener:
 
-        - "average_sale" (int): Venta promedio del producto en un período.
-        - "replenishment_time" (int): Tiempo que tarda el proveedor en entregar (en semanas).
-        - "current_stock" (int): Inventario físico actual en el almacén.
-        - "safety_stock" (int): Stock de colchón para prevenir desabastecimiento.
-        - "packing" (int): Cantidad que viene en el empaque.
+        - "average_sale" (float): Venta promedio del producto en un período (semanas).
+        - "replenishment_time" (float): Tiempo que tarda el proveedor en entregar (en semanas).
+        - "current_stock" (float): Inventario físico actual en el almacén.
+        - "safety_stock" (float): Stock de colchón para prevenir desabastecimiento.
+        - "packing" (float): Cantidad que viene en el empaque.
 
     Returns:
         dict: Un diccionario con:
-        - "cantidad" (int): Cantidad óptima en unidades a solicitar.
-        - "empaque" (int): Cantidad de cajas/paquetes cerrados para el proveedor.
+        - "cantidad" (float): Cantidad óptima en unidades a solicitar.
+        - "empaque" (float): Cantidad de cajas/paquetes cerrados para el proveedor.
     """
-    average_sale: float = product_data["average_sale"]
-    replenishment_time: float = product_data["replenishment_time"]
-    current_stock: float = product_data["current_stock"]
-    safety_stock: float = product_data["safety_stock"]
-    packing: float = product_data["packing"]
+    average_sale: float = product_data.get("average_sale") / 7
+    replenishment_time: float = product_data.get("replenishment_time")
+    current_stock: float = product_data.get("current_stock")
+    safety_stock: float = product_data.get("safety_stock")
+    packing: float = product_data.get("packing", 1)
 
     if average_sale is None or replenishment_time is None or current_stock is None:
         print("Sin datos para realizar el calculo")
@@ -65,6 +65,6 @@ def average_weekly_sales(sales_week: list) -> int:
         print("Ventas vacias")
         raise ValueError("La lista de ventas no puede eatar vacía.")
 
-    average_sale = round(sum(sales_week) / len(sales_week))
+    average_sale = sum(sales_week) / len(sales_week)
     print(f"Pormedio venta: {average_sale}")
-    return round(average_sale)
+    return average_sale
