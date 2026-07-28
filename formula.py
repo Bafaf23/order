@@ -10,7 +10,7 @@ def suggested(product_data: dict) -> dict:
 
         Debe contener:
 
-        - "average_sale" (float): Venta promedio del producto en un período (semanas).
+        - "average_sale" (dict): Venta promedio del producto en un período (semanas).
         - "replenishment_time" (float): Tiempo que tarda el proveedor en entregar (en semanas).
         - "current_stock" (float): Inventario físico actual en el almacén.
         - "safety_stock" (float): Stock de colchón para prevenir desabastecimiento.
@@ -20,8 +20,9 @@ def suggested(product_data: dict) -> dict:
         dict: Un diccionario con:
         - "cantidad" (float): Cantidad óptima en unidades a solicitar.
         - "empaque" (float): Cantidad de cajas/paquetes cerrados para el proveedor.
+        - "stock_seguridad": Cantidad para prevencion de logistica ante cualquier imprevisto de parte del proveedor
     """
-    raw_average_sale: float = product_data.get("average_sale")
+    raw_average_sale: dict = product_data.get("average_sale")
     replenishment_time: float = product_data.get("replenishment_time")
     current_stock: float = product_data.get("current_stock")
     packing: float = product_data.get("packing", 1)
@@ -31,7 +32,7 @@ def suggested(product_data: dict) -> dict:
         return {"cantidad": 0, "empaque": 0}
 
     # venta diaria
-    average_sale: float = raw_average_sale / 7
+    average_sale: float = raw_average_sale["vp"] / 7
 
     # stock de seguridad
     safety_stock: float = average_sale * replenishment_time
@@ -50,10 +51,12 @@ def suggested(product_data: dict) -> dict:
     return {
         "cantidad": int(necessary_packages * packing),
         "empaque": necessary_packages,
+        "stock_seguridad": safety_stock,
+        "stock_ideal": optimal_inventory,
     }
 
 
-def average_weekly_sales(sales_week: list) -> float:
+def average_weekly_sales(sales_week: list) -> dict:
     """Calcula el promedio de la venta semanales de un producto.
     Tomo una lista con las ventas de toda una semana y retorna un resultado redondeado.
 
@@ -61,7 +64,11 @@ def average_weekly_sales(sales_week: list) -> float:
         sales_week (list): Una lista de numeros que representan las ventas semanales.
 
     Returns:
-        float: el promedio de ventas expresado con un numero entero del mes.
+        dict: diccionario de el vp mensual y diaria.
+
+        debe contener:
+        - "vp": venta promedio semanal
+        - "vp_diaria": Venta promedio diaria de un producto
 
     Raises:
         ValueError: Si la lista `sales_week` está vacía.
@@ -73,7 +80,8 @@ def average_weekly_sales(sales_week: list) -> float:
         raise ValueError("La lista de ventas no puede eatar vacía.")
 
     average_sale = sum(sales_week) / len(sales_week)
+    average_dari = average_sale / 7
 
-    print(f"Promedio de venta semanal: {average_sale:.2f}")
+    print(f"Promedio de venta semanal: {average_sale:.2f} y diaria: {average_dari:.2f}")
 
-    return average_sale
+    return {"vp": average_sale, "vp_diaria": average_dari}

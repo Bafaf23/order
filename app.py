@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, request, redirect
 import os
 import pandas as pd
 from formula import suggested, average_weekly_sales
+from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder="templates")
 app.secret_key = os.environ.get("SECRET", "ORDER_S")
@@ -9,7 +10,7 @@ app.secret_key = os.environ.get("SECRET", "ORDER_S")
 # Extenciones de archivos permitdas
 ALLOWED_EXTENSIONS = {".xlsx", ".xls", "csv"}
 
-version = "1.0.0"
+version = os.getenv("APP_VERSION", "1.0.0")
 
 
 @app.route("/")
@@ -62,6 +63,11 @@ def upload_file():
 
             return float(text)
 
+        def truncar(numero, decimales=2):
+            """Corta los decimales de una cademan de numeros muy larga"""
+            factor = 10**decimales
+            return int(numero * factor) / factor
+
         for _, row in df.iterrows():
 
             pre_sale = [
@@ -85,6 +91,7 @@ def upload_file():
             }
 
             final_amount = suggested(product_data)
+            vp = average_weekly_sales(pre_sale)
 
             register = {
                 "interno": str(row.get("ITEM", row.get("interno", "N/A"))).strip(),
@@ -94,9 +101,19 @@ def upload_file():
                 "cantidad": str(row.get("I_NETO", row.get("cantidad_en_mano", 0))),
                 "sugerida_UXE": final_amount["cantidad"],
                 "sugerida_empaque": final_amount["empaque"],
-                "venta_promedio": average_weekly_sales(pre_sale),
+                "venta_promedio": truncar(vp["vp"], 2),
+                "vp_diaria": truncar(vp["vp_diaria"], 2),
                 "empaque": str(row.get("UXE", row.get("empaque", 1))),
                 "estatus": str(row.get("S", row.get("estatus", "C"))),
+                "stock_seguridad": truncar(
+                    (
+                        final_amount.get("stock_seguridad", 0)
+                        if isinstance(final_amount, dict)
+                        else 0
+                    ),
+                    2,
+                ),
+                "stock_ideal": truncar(final_amount.get("stock_ideal", 0), 2),
             }
             register_proces.append(register)
 

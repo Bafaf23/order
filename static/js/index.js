@@ -6,7 +6,6 @@ const uploadInstructions = document.getElementById("uploadInstructions");
 const btnResetFile = document.getElementById("btnResetFile");
 const btnSubmit = document.getElementById("btnSubmit");
 
-// Detecta el cambio en el input (cuando seleccionan algo de forma puramente local)
 fileInput.addEventListener("change", function () {
   if (fileInput.files.length > 0) {
     const file = fileInput.files[0];
@@ -83,3 +82,14 @@ dropzone.addEventListener(
   },
   false,
 );
+
+/**
+ * Funcion que controla el loading
+ */
+const form = document.getElementById("uploadForm");
+const loader = document.getElementById("loading-overlay");
+
+form.addEventListener("submit", () => {
+  loader.classList.remove("hidden");
+  loader.classList.add("flex");
+});

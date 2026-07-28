@@ -1,6 +1,4 @@
-{% extends "_layout.html" %} 
-{% block content %} 
-{% if file %}
+{% extends "_layout.html" %} {% block content %} {% if file %}
 <section>
   <h2 class="text-slate-400 font-bold uppercase mb-2">Archivo procesado</h2>
   <div class="w-full bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
@@ -28,76 +26,117 @@
   <div class="flex flex-col gap-2 overflow-hidden">
     {% for row in file.registros %}
     <div
-      class="w-full bg-white border border-slate-200 rounded-lg p-4 shadow-sm mb-3"
+      class="mb-3 w-full rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-colors hover:border-slate-300"
     >
-      <!-- Label vinculado al checkbox -->
+      <!-- Checkbox vinculado (Oculto pero accesible) -->
+      <input
+        type="checkbox"
+        id="check-{{ row.interno }}"
+        name="productos"
+        value="{{ row.interno }}"
+        class="peer sr-only"
+      />
+
+      <!-- Label completo con feedback visual 'peer-checked' -->
       <label
         for="check-{{ row.interno }}"
-        class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer"
+        class="flex cursor-pointer flex-col justify-between gap-3 rounded-lg select-none p-1 transition-all peer-checked:ring-2 peer-checked:ring-orange-500 peer-checked:border-transparent sm:flex-row sm:items-center"
       >
-        <div class="flex items-start gap-3">
-          <!-- Icono centrado superior en móvil -->
+        <div class="flex min-w-0 items-start gap-3">
+          <!-- Icono descriptivo -->
           <i
-            class="fa-solid fa-box text-orange-600 text-xl sm:text-2xl mt-0.5"
+            class="fa-solid fa-box mt-0.5 shrink-0 text-xl text-orange-600 sm:text-2xl"
           ></i>
 
-          <div class="flex-1 min-w-0">
-            <!-- El nombre del producto -->
-            <p class="text-slate-600 text-[10px] sm:text-xs">
-              Interno: {{ row.interno }}
-            </p>
+          <div class="min-w-0 flex-1">
+            <!-- Código Interno y Badges superiores -->
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-[10px] font-mono text-slate-400 sm:text-xs">
+                INT: {{ row.interno }}
+              </p>
+              <div class="flex items-center gap-1.5">
+                <span
+                  class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-slate-600"
+                >
+                  Estatus: {{ row.estatus }}
+                </span>
+                <span
+                  class="rounded bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200"
+                >
+                  Stock: {{ row.cantidad }}
+                </span>
+              </div>
+            </div>
 
-            <!-- max-w-full evita que el texto rompa el contenedor en móviles -->
-            <p
-              class="font-bold text-slate-800 text-sm sm:text-base max-w-full sm:w-64 truncate"
+            <!-- Nombre del producto -->
+            <h2
+              class="mt-0.5 max-w-full truncate font-bold text-slate-800 text-sm sm:text-base"
+              title="{{ row.descripcion }}"
             >
               {{ row.descripcion }}
-            </p>
+            </h2>
 
-            <!-- Datos de inventario distribuidos en bloques limpios para pantallas pequeñas -->
+            <!-- Métricas del inventario -->
             <p
-              class="text-[11px] sm:text-xs text-slate-500 mt-1 leading-relaxed"
+              class="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] leading-relaxed text-slate-500 sm:text-xs"
             >
-              <span class="inline-block sm:inline"
-                >Inv: <strong>{{ row.cantidad }}</strong></span
+              <span
+                >Vta. Prom D:
+                <strong class="text-slate-700"
+                  >{{ row.vp_diaria }}</strong
+                ></span
               >
-              <span class="mx-1 text-slate-300">|</span>
-              <span class="inline-block sm:inline"
-                >Vta. Prom: <strong>{{ row.venta_promedio }}</strong></span
+              <span class="text-slate-300">|</span>
+              <span
+                >Vta. Prom:
+                <strong class="text-slate-700"
+                  >{{ row.venta_promedio }}</strong
+                ></span
               >
-              <span class="mx-1 text-slate-300">|</span>
-              <span class="inline-block sm:inline"
-                >Empaque: <strong>{{ row.empaque }}uds</strong></span
+              <span class="text-slate-300">|</span>
+              <span
+                >Empaque:
+                <strong class="text-slate-700">{{ row.empaque }}</strong></span
               >
-              <span class="mx-1 text-slate-300">|</span>
-              <span class="inline-block sm:inline"
-                >Estatus: <strong>{{ row.estatus }}</strong></span
+              <span class="text-slate-300">|</span>
+              <span
+                >Stock Seg:
+                <strong class="text-slate-700"
+                  >{{ row.stock_seguridad }}</strong
+                ></span
+              >
+              <span class="text-slate-300">|</span>
+              <span
+                >Stock Ideal:
+                <strong class="text-slate-700"
+                  >{{ row.stock_ideal }}</strong
+                ></span
               >
             </p>
           </div>
         </div>
 
-        <!-- Contenedor del resultado: se alinea a la derecha en PC y abajo a la derecha en móvil -->
+        <!-- Resultados del Sugerido (Unidades / Empaques) -->
         <div
-          class="flex justify-end items-center border-t border-slate-100 pt-2 sm:pt-0 sm:border-0 mt-1 sm:mt-0"
+          class="mt-1 flex shrink-0 items-end justify-between border-t border-slate-100 pt-2 sm:mt-0 sm:flex-col sm:justify-center sm:border-0 sm:pt-0"
         >
-          <div class="text-right">
-            <p class="text-xs text-slate-400 block sm:hidden">
-              Sugerido (Unidades / Empaque)
-            </p>
-            <div class="flex gap-2 justify-end">
-              <p
-                class="text-xl sm:text-2xl text-green-500 font-bold tracking-tight"
-              >
-                {{ row.sugerida_UXE }}
-              </p>
-              <span class="text-slate-400 font-normal text-lg">/</span>
-              <p
-                class="text-xl sm:text-2xl text-amber-500 font-bold tracking-tight"
-              >
-                {{ row.sugerida_empaque }}
-              </p>
-            </div>
+          <span class="block text-[11px] text-slate-400 sm:hidden">
+            Sugerido (Unidades / Empaque)
+          </span>
+          <div class="flex items-baseline gap-1.5 text-right">
+            <span
+              class="text-xl font-bold tracking-tight text-emerald-600 sm:text-2xl"
+              title="Sugerido en Unidades"
+            >
+              {{ row.sugerida_UXE }}
+            </span>
+            <span class="text-lg font-light text-slate-300">/</span>
+            <span
+              class="text-xl font-bold tracking-tight text-amber-600 sm:text-2xl"
+              title="Sugerido en Empaques"
+            >
+              {{ row.sugerida_empaque }}
+            </span>
           </div>
         </div>
       </label>
@@ -172,5 +211,4 @@
     </button>
   </div>
 </form>
-{% endif %} 
-{% endblock %}
+{% endif %} {% endblock %}
