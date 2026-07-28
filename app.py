@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, request, redirect
 import os
 import pandas as pd
 from formula import suggested, average_weekly_sales
+from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder="templates")
 app.secret_key = os.environ.get("SECRET", "ORDER_S")
@@ -9,7 +10,7 @@ app.secret_key = os.environ.get("SECRET", "ORDER_S")
 # Extenciones de archivos permitdas
 ALLOWED_EXTENSIONS = {".xlsx", ".xls", "csv"}
 
-version = "1.0.0"
+version = os.getenv("APP_VERSION", "1.0.0")
 
 
 @app.route("/")
