@@ -29,7 +29,7 @@ def suggested(product_data: dict) -> dict:
 
     if raw_average_sale is None or replenishment_time is None or current_stock is None:
         print("Sin datos para realizar el calculo")
-        return {"cantidad": 0, "empaque": 0}
+        return {"cantidad": 0, "empaque": 0, "stock_seguridad": 0.0, "stock_ideal": 0.0}
 
     # venta diaria
     average_sale: float = raw_average_sale["vp"] / 7
@@ -42,14 +42,15 @@ def suggested(product_data: dict) -> dict:
     result = optimal_inventory - current_stock
 
     if result <= 0:
-        return {"cantidad": 0, "empaque": 0}
-
-    necessary_packages = math.ceil(result / packing)
-
-    print(f"Stock de seguridad calculado: {safety_stock:.2f}")
+        necessary_packages = 0
+        amount = 0
+    else:
+        necessary_packages = math.ceil(result / packing)
+        print(f"Stock de seguridad calculado: {safety_stock:.2f}")
+        amount = int(necessary_packages * packing)
 
     return {
-        "cantidad": int(necessary_packages * packing),
+        "cantidad": amount,
         "empaque": necessary_packages,
         "stock_seguridad": safety_stock,
         "stock_ideal": optimal_inventory,
