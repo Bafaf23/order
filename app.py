@@ -1,5 +1,5 @@
 from typing import Text
-from flask import Flask, render_template, flash, request, redirect
+from flask import Flask, render_template, send_from_directory, flash, request, redirect
 import os
 import pandas as pd
 from pandas.core.arrays import boolean
@@ -19,6 +19,12 @@ version = os.getenv("APP_VERSION", "1.0.0")
 def home():
     """Ruta index de app"""
     return render_template("index.html", version=version)
+
+
+@app.route("/ads.txt")
+def ads_txt():
+    """Sirve ads.txt ubicado en la raíz del directorio del proyecto."""
+    return send_from_directory(app.root_path, "ads.txt", mimetype="text/plain")
 
 
 @app.route("/upload", methods=["POST"])
