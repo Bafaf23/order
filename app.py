@@ -1,6 +1,8 @@
+from typing import Text
 from flask import Flask, render_template, flash, request, redirect
 import os
 import pandas as pd
+from pandas.core.arrays import boolean
 from formula import suggested, average_weekly_sales
 from dotenv import load_dotenv
 
@@ -49,24 +51,39 @@ def upload_file():
 
         register_proces = []
 
-        def clane(value: str) -> float:
-            """Limpia un text para trasformarlo a numero
+        def clane(value: str) -> tuple[float | int, bool]:
+            """Limpia un texto, lo convierte a número e identifica si es pesable.
+
             Args:
-                value (str): valor para limpiar y convertir
+                value (str): Texto o valor a procesar.
+
             Returns:
-                int: value formateado
+                tuple[float | int, bool]: Una tupla con (valor_numerico, es_pesable).
             """
+
             text = str(value).strip().replace(",", ".")
 
             if text in ["", "None", "nan", "NaN"]:
-                return 0.0
+                return 0, False
 
-            return float(text)
+            try:
+                val = float(text)
 
-        def truncar(numero, decimales=2):
+                is_weighable = not val.is_integer()
+
+                number = val if is_weighable else int(val)
+
+                return number, is_weighable
+            except ValueError:
+                return 0, False
+
+        def truncar(numero, decimales, weighable):
             """Corta los decimales de una cademan de numeros muy larga"""
-            factor = 10**decimales
-            return int(numero * factor) / factor
+            if weighable:
+                factor = 10**decimales
+                return int(numero * factor) / factor
+
+            return int(round(numero))
 
         for _, row in df.iterrows():
 
@@ -87,7 +104,8 @@ def upload_file():
                 "current_stock": float(
                     float(row.get("I_NETO", row.get("cantidad_en_mano", 0)))
                 ),
-                "packing": float(row.get("UXE", row.get("empaque", 1))),
+                "packing": int(row.get("UXE", row.get("empaque", 1))),
+                "is_weighable": average_weekly_sales(pre_sale).get("pesable", False),
             }
 
             final_amount = suggested(product_data)
@@ -101,8 +119,8 @@ def upload_file():
                 "cantidad": str(row.get("I_NETO", row.get("cantidad_en_mano", 0))),
                 "sugerida_UXE": final_amount["cantidad"],
                 "sugerida_empaque": final_amount["empaque"],
-                "venta_promedio": truncar(vp["vp"], 2),
-                "vp_diaria": truncar(vp["vp_diaria"], 2),
+                "venta_promedio": truncar(vp["vp"], 2, final_amount.get("pesable")),
+                "vp_diaria": truncar(vp["vp_diaria"], 2, final_amount.get("pesable")),
                 "empaque": str(row.get("UXE", row.get("empaque", 1))),
                 "estatus": str(row.get("S", row.get("estatus", "C"))),
                 "stock_seguridad": truncar(
@@ -112,8 +130,12 @@ def upload_file():
                         else 0
                     ),
                     2,
+                    final_amount.get("pesable"),
                 ),
-                "stock_ideal": truncar(final_amount.get("stock_ideal", 0), 2),
+                "stock_ideal": truncar(
+                    final_amount.get("stock_ideal", 0), 2, final_amount.get("pesable")
+                ),
+                "pesable": final_amount.get("pesable"),
             }
             register_proces.append(register)
 

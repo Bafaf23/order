@@ -34,9 +34,19 @@
       >
         <div class="flex min-w-0 items-start gap-3">
           <!-- Icono descriptivo -->
+          {% if row.pesable %}
+          <!-- Icono para Pesable: Bolsa de viveres a granel -->
+          <i
+            class="fa-solid fa-basket-shopping mt-0.5 shrink-0 text-xl text-amber-600 sm:text-2xl"
+            title="Pesable / Granel"
+          ></i>
+          {% else %}
+          <!-- Icono para Unitario: Caja de empaque -->
           <i
             class="fa-solid fa-box mt-0.5 shrink-0 text-xl text-orange-600 sm:text-2xl"
+            title="Unitario (Empacado)"
           ></i>
+          {% endif %}
 
           <div class="min-w-0 flex-1">
             <!-- Código Interno y Badges superiores -->
@@ -50,11 +60,19 @@
                 >
                   Estatus: {{ row.estatus }}
                 </span>
+                {% if row.cantidad <= "0" %}
+                <span
+                  class="rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-[10px] font-bold text-red-700"
+                >
+                  Stock: {{ row.cantidad }}
+                </span>
+                {% else %}
                 <span
                   class="rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] font-bold text-emerald-700"
                 >
                   Stock: {{ row.cantidad }}
                 </span>
+                {% endif %}
               </div>
             </div>
 
@@ -121,9 +139,12 @@
               <span class="text-slate-300">|</span>
 
               <!-- Empaque -->
-              <span class="inline-flex items-center gap-1">
+              <span class="inline-flex items-center gap-1 text-slate-600">
                 Empaque:
-                <strong class="text-slate-700">{{ row.empaque }}</strong>
+                <strong class="text-slate-700">
+                  {{ row.empaque }} {% if row.pesable %}Kg{% else %}unds{% endif
+                  %}
+                </strong>
 
                 <span
                   class="group relative inline-flex items-center cursor-help"
@@ -199,9 +220,24 @@
         <div
           class="mt-1 flex shrink-0 items-end justify-between border-t border-slate-100 pt-2 sm:mt-0 sm:flex-col sm:justify-center sm:border-0 sm:pt-0"
         >
+          {%if row.pesable %}
+          <span class="block text-[11px] text-slate-400 sm:hidden">
+            Sugerido (Kg)
+          </span>
+          {% else %}
           <span class="block text-[11px] text-slate-400 sm:hidden">
             Sugerido (Unidades / Empaque)
           </span>
+          {% endif %} {% if row.pesable %}
+          <div class="flex items-baseline gap-1.5 text-right">
+            <span
+              class="text-xl font-bold tracking-tight text-green-600 sm:text-2xl"
+              title="Sugerido en Kg"
+            >
+              {{ row.sugerida_empaque }}
+            </span>
+          </div>
+          {% else %}
           <div class="flex items-baseline gap-1.5 text-right">
             <span
               class="text-xl font-bold tracking-tight text-emerald-600 sm:text-2xl"
@@ -217,6 +253,7 @@
               {{ row.sugerida_empaque }}
             </span>
           </div>
+          {% endif %}
         </div>
       </div>
     </div>
