@@ -94,6 +94,8 @@ def upload_file():
         for _, row in df.iterrows():
 
             pre_sale = [
+                row.get("ITEM", row.get("interno")),
+                row.get("ITEM_LONG_DESC", row.get("descripcion")),
                 clane(row.get("SEM1")),
                 clane(row.get("SEM2")),
                 clane(row.get("SEM3")),
@@ -101,21 +103,29 @@ def upload_file():
                 clane(row.get("SEM5")),
             ]
 
+            # SOLUCCIÓN: Ejecutar la función UNA SOLA VEZ y guardar sus datos
+            ventas_calculadas = average_weekly_sales(pre_sale)
+
             # dicionario de la informacion del producto para el calculo
             product_data = {
-                "average_sale": average_weekly_sales(pre_sale),
+                "average_sale": ventas_calculadas,  # Reutiliza la variable
                 "replenishment_time": float(
                     row.get("Tiempo_Reposicion", row.get("tiempo_reposicion", 1))
                 ),
                 "current_stock": float(
-                    float(row.get("I_NETO", row.get("cantidad_en_mano", 0)))
+                    row.get("I_NETO", row.get("cantidad_en_mano", 0))
                 ),
                 "packing": int(row.get("UXE", row.get("empaque", 1))),
-                "is_weighable": average_weekly_sales(pre_sale).get("pesable", False),
+                "is_weighable": ventas_calculadas.get("pesable", False),
+                "frecuencia_despacho": int(
+                    row.get("Frecuencia_Despacho", row.get("frecuencia", 1))
+                ),
             }
 
             final_amount = suggested(product_data)
-            vp = average_weekly_sales(pre_sale)
+
+            # Ya no necesitas volver a llamar a la función aquí, usamos la variable de arriba
+            vp = ventas_calculadas
 
             register = {
                 "interno": str(row.get("ITEM", row.get("interno", "N/A"))).strip(),
