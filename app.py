@@ -108,18 +108,16 @@ def upload_file():
 
             # dicionario de la informacion del producto para el calculo
             product_data = {
-                "average_sale": ventas_calculadas,  # Reutiliza la variable
+                "average_sale": ventas_calculadas,
                 "replenishment_time": float(
-                    row.get("Tiempo_Reposicion", row.get("tiempo_reposicion", 1))
-                ),
-                "current_stock": float(
-                    row.get("I_NETO", row.get("cantidad_en_mano", 0))
-                ),
-                "packing": int(row.get("UXE", row.get("empaque", 1))),
+                    row.get("tiempo_reposicion", 2)
+                ),  # Lee el '2' de tu tabla
+                "current_stock": float(row.get("I_NETO", 0)),
+                "packing": float(row.get("UXE", 1)),
                 "is_weighable": ventas_calculadas.get("pesable", False),
                 "frecuencia_despacho": int(
-                    row.get("Frecuencia_Despacho", row.get("frecuencia", 1))
-                ),
+                    row.get("frecuencia", 2)
+                ),  # Lee el '2' de tu tabla
             }
 
             final_amount = suggested(product_data)
