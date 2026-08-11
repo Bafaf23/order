@@ -12,14 +12,13 @@ def average_weekly_sales(sales_week: list) -> dict:
     code = sales_week
     product = sales_week
 
-    # CORRECCIÓN DE TUPLA: Extraemos el primer elemento v[0] que contiene el número real
     val = []
     is_weighable = False
 
     for v in sales_week[2:]:
         if isinstance(v, tuple) and v is not None:
-            val.append(float(v[0]))  # <--- v[0] es el número (ej: 71.115)
-            is_weighable = v[1]  # <--- v[1] es el booleano (ej: True)
+            val.append(float(v[0]))
+            is_weighable = v[1]
 
     if not val:
         print(f"El producto {code} no tiene valores numéricos en sus semanas.")
@@ -95,7 +94,7 @@ def suggested(product_data: dict) -> dict:
     else:
         if is_weighable:
             # Para Kg (Pepino, Tomate) no redondeamos a enteros, dejamos los decimales exactos
-            amount = round(result, 3)
+            amount = math.ceil(result)
             necessary_packages = round(amount / packing, 3)
         else:
             # Para productos por unidad (Bandejas de fresas) redondeamos hacia arriba
