@@ -1,18 +1,26 @@
-from typing import Text
-from flask import Flask, render_template, send_from_directory, flash, request, redirect
+from flask import (
+    Flask,
+    render_template,
+    send_from_directory,
+    flash,
+    session,
+    request,
+    redirect,
+)
 import os
 import pandas as pd
-from pandas.core.arrays import boolean
 from formula import suggested, average_weekly_sales
+from send_sms import send
 from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder="templates")
-app.secret_key = os.environ.get("SECRET", "ORDER_S")
+
 
 # Extenciones de archivos permitdas
 ALLOWED_EXTENSIONS = {".xlsx", ".xls", "csv"}
 
 version = os.getenv("APP_VERSION", "1.0.0")
+app.secret_key = os.environ.get("SECRET", "ORDER_S")
 
 
 @app.route("/")
@@ -91,7 +99,13 @@ def upload_file():
 
             return int(round(numero))
 
+        contac = None
+        firma = None
         for _, row in df.iterrows():
+
+            if pd.notna(row["contacto"]) and str(row["contacto"]).strip() != "":
+                contac = str(row.get("contacto", "S/C"))
+                firma = str(row.get("firma", "S/N"))
 
             pre_sale = [
                 row.get("ITEM", row.get("interno")),
@@ -103,7 +117,6 @@ def upload_file():
                 clane(row.get("SEM5")),
             ]
 
-            # SOLUCCIÓN: Ejecutar la función UNA SOLA VEZ y guardar sus datos
             ventas_calculadas = average_weekly_sales(pre_sale)
 
             # dicionario de la informacion del producto para el calculo
@@ -115,9 +128,7 @@ def upload_file():
                 "current_stock": float(row.get("I_NETO", 0)),
                 "packing": float(row.get("UXE", 1)),
                 "is_weighable": ventas_calculadas.get("pesable", False),
-                "frecuencia_despacho": int(
-                    row.get("frecuencia", 2)
-                ),  # Lee el '2' de tu tabla
+                "frecuencia_despacho": int(row.get("frecuencia", 2)),
             }
 
             final_amount = suggested(product_data)
@@ -150,12 +161,17 @@ def upload_file():
                     final_amount.get("stock_ideal", 0), 2, final_amount.get("pesable")
                 ),
                 "pesable": final_amount.get("pesable"),
+                "contac": contac,
+                "firma": firma,
             }
             register_proces.append(register)
 
         file_uploaded = {"nombre": file.filename, "registros": register_proces}
         flash("¡Inventario cargado y analizado con éxito!", "success")
-        return render_template("index.html", file=file_uploaded, version=version)
+        session["registros_temporales"] = register_proces
+        return render_template(
+            "index.html", file=file_uploaded, version=version, contact=contac
+        )
     except Exception as e:
         print(f"Error procesando el archivo {str(e)}")
         flash(
@@ -163,6 +179,47 @@ def upload_file():
             "error",
         )
         return redirect("/")
+
+
+@app.route("/send_order", methods=["POST"])
+def send_order():
+    contacto = request.form.get("contacto")
+    data = session.get("registros_temporales", [])
+    firma = f"{data[0]["firma"]} - *Lider de Compra (Central Madeirense)*"
+
+    if not contacto.startswith("+"):
+        contacto = "+" + contacto
+
+    message = []
+
+    for i, row in enumerate(data):
+
+        register = {
+            "N": i,
+            "codigo interno": row.get("interno"),
+            "articulo": row.get("descripcion"),
+            "pedido": row.get("sugerida_UXE"),
+        }
+
+        message.append(register)
+
+    mensaje_texto = "📦 *Resumen del Pedido:*\n\n"
+
+    for producto in message:
+        if producto["pedido"] > 0:
+            mensaje_texto += f"{producto['N']}. {producto["codigo interno"]} *{producto['articulo']}* - Cantidad: {producto['pedido']}\n"
+
+    mensaje_texto += "\n_Por favor, confirma la recepción de esta orden._\n"
+    mensaje_texto += firma
+
+    order = send(contacto, mensaje_texto)
+
+    if order == True:
+        flash("El pedido se envio con exito, revisa tu Whatsapp web", "success")
+    else:
+        flash("No se pudo enviar el pedido, intenta de nuevo más tarde", "error")
+
+    return redirect("/")
 
 
 if __name__ == "__main__":
