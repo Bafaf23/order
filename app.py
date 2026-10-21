@@ -11,10 +11,8 @@ import os
 import pandas as pd
 from formula import suggested, average_weekly_sales
 from send_sms import send
-from dotenv import load_dotenv
 
 app = Flask(__name__, template_folder="templates")
-
 
 # Extenciones de archivos permitdas
 ALLOWED_EXTENSIONS = {".xlsx", ".xls", "csv"}
@@ -133,7 +131,6 @@ def upload_file():
 
             final_amount = suggested(product_data)
 
-            # Ya no necesitas volver a llamar a la función aquí, usamos la variable de arriba
             vp = ventas_calculadas
 
             register = {
@@ -185,37 +182,42 @@ def upload_file():
 def send_order():
     contacto = request.form.get("contacto")
     data = session.get("registros_temporales", [])
-    firma = f"{data[0]["firma"]} - *Lider de Compra (Central Madeirense)*"
 
-    if not contacto.startswith("+"):
+    if not data:
+        flash("No hay registros en la sesión para procesar.", "error")
+        return redirect("/")
+
+    # Cambio a comillas simples dentro de las llaves
+    firma = f"{data[0]['firma']} - *Lider de Compra*"
+
+    if contacto and not contacto.startswith("+"):
         contacto = "+" + contacto
 
     message = []
 
     for i, row in enumerate(data):
-
         register = {
             "N": i,
             "codigo interno": row.get("interno"),
             "articulo": row.get("descripcion"),
             "pedido": row.get("sugerida_UXE"),
         }
-
         message.append(register)
 
     mensaje_texto = "📦 *Resumen del Pedido:*\n\n"
 
     for producto in message:
-        if producto["pedido"] > 0:
-            mensaje_texto += f"{producto['N']}. {producto["codigo interno"]} *{producto['articulo']}* - Cantidad: {producto['pedido']}\n"
+        if producto["pedido"] and float(producto["pedido"]) > 0:
+            # Cambio a comillas simples dentro de las llaves
+            mensaje_texto += f"{producto['N']}. {producto['codigo interno']} *{producto['articulo']}* - Cantidad: {producto['pedido']}\n"
 
     mensaje_texto += "\n_Por favor, confirma la recepción de esta orden._\n"
     mensaje_texto += firma
 
     order = send(contacto, mensaje_texto)
 
-    if order == True:
-        flash("El pedido se envio con exito, revisa tu Whatsapp web", "success")
+    if order is True:
+        flash("El pedido se envió con éxito, revisa tu Whatsapp web", "success")
     else:
         flash("No se pudo enviar el pedido, intenta de nuevo más tarde", "error")
 
