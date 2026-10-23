@@ -39,10 +39,50 @@
       ></button>
       {%endif%}
     </div>
-    <div class="flex flex-col gap-2 overflow-hidden">
+      <!-- tabla pc -->
+    <div class="overflow-x-auto shadow-md rounded-lg border border-gray-200 my-6">
+  <table class="w-full text-sm text-left text-gray-600 border-collapse">
+    <thead class="text-xs text-gray-700 uppercase bg-white border-b border-gray-200">
+      <tr>
+        <th class="px-6 py-4 font-bold">Id y estatus</th>
+        <th class="px-6 py-4 font-bold">Producto</th>
+        <th class="px-6 py-4 font-bold">Promedio Ventas Diario</th>
+        <th class="px-6 py-4 font-bold">Promedio Ventas Semanal</th>
+        <th class="px-6 py-4 font-bold">Tamaño del empaque</th>
+        <th class="px-6 py-4 font-bold">Stock de Seguridad</th>
+        <th class="px-6 py-4 font-bold">Stock de ideal</th>
+        <th class="px-6 py-4 font-bold">Cantidad en mano</th>
+        <!-- Columna destacada con color de fondo sutil -->
+        <th class="px-6 py-4 font-extrabold bg-gray-50 text-gray-900 border-l border-gray-200">Sugerido</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      {% for row in file.registros %}
+      <tr class="bg-white hover:bg-gray-50 transition-colors">
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ row.interno }} / {{ row.estatus }}</td>
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ row.descripcion }}</td>
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.vp_diaria }}</td>
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.venta_promedio }}</td>
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ row.empaque }}</td>
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.stock_seguridad }}</td>
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.stock_ideal }}</td>
+        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.cantidad }}</td>
+        <!-- Celda integrada correctamente y destacada visualmente -->
+        <td class="px-6 py-4 font-bold text-indigo-700 bg-indigo-50/30 whitespace-nowrap text-right border-l border-gray-200">
+          {{ row.sugerida_empaque }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+    <!-- card movil -->
+    <div class="flex flex-col gap-2 overflow-hidden md:hidden lg:hidden">
       {% for row in file.registros %}
       <div
-        class="mb-3 w-full rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-colors hover:border-slate-300"
+        class="mb-3 w-full rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition-colors hover:border-slate-300 md:hidden lg:hidden"
       >
         <!-- Tarjeta principal de producto -->
         <div
@@ -276,7 +316,6 @@
           </div>
         </div>
       </div>
-
       {% endfor %}
     </div>
   </form>
