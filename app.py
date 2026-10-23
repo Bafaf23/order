@@ -10,7 +10,7 @@ from flask import (
 import os
 import pandas as pd
 from formula import suggested, average_weekly_sales
-from send_sms import send
+""" from send_sms import send """
 
 app = Flask(__name__, template_folder="templates")
 
@@ -178,7 +178,7 @@ def upload_file():
         return redirect("/")
 
 
-@app.route("/send_order", methods=["POST"])
+""" @app.route("/send_order", methods=["POST"])
 def send_order():
     contacto = request.form.get("contacto")
     data = session.get("registros_temporales", [])
@@ -223,7 +223,7 @@ def send_order():
 
     return redirect("/")
 
-
+"""
 if __name__ == "__main__":
     puerto = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host="0.0.0.0", port=puerto)
