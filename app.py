@@ -12,6 +12,9 @@ import pandas as pd
 from formula import suggested, average_weekly_sales
 """ from send_sms import send """
 
+is_production = os.environ.get("NODEV") == "production"
+print(is_production)
+
 app = Flask(__name__, template_folder="templates")
 
 # Extenciones de archivos permitdas
@@ -226,4 +229,4 @@ def send_order():
 """
 if __name__ == "__main__":
     puerto = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host="0.0.0.0", port=puerto)
+    app.run(debug= not is_production, host="0.0.0.0", port=puerto)
