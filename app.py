@@ -13,7 +13,6 @@ from formula import suggested, average_weekly_sales
 """ from send_sms import send """
 
 is_production = os.environ.get("NODEV") == "production"
-print(is_production)
 
 app = Flask(__name__, template_folder="templates")
 
