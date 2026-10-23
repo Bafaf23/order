@@ -1,8 +1,7 @@
-import pywhatkit as kit
-
-
 def send(phone: str, mesagge: str) -> bool:
     try:
+        import pywhatkit as kit
+
         kit.sendwhatmsg_instantly(phone, mesagge)
         print("Mensaje enviado con exito")
         return True
