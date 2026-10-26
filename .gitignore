@@ -3,3 +3,5 @@
 __pycache__/
 *.pyc
 send_sms.py
+
+.vscode

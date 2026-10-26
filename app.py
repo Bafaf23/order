@@ -5,12 +5,15 @@ from flask import (
     flash,
     session,
     request,
+    url_for,
     redirect,
 )
+from urllib.parse import urlparse
 import os
 import pandas as pd
 from formula import suggested, average_weekly_sales
 """ from send_sms import send """
+from playwright.sync_api import sync_playwright
 
 is_production = os.environ.get("NODEV") == "production"
 
@@ -165,9 +168,24 @@ def upload_file():
             }
             register_proces.append(register)
 
+        UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+        
+        # 2. Sanitizar el nombre y estructurar la ruta final en el servidor
+        from werkzeug.utils import secure_filename
+        filename = secure_filename(file.filename)
+        ruta_guardada = os.path.join(UPLOAD_FOLDER, filename)
+        
+        # 3. Mover el puntero al inicio del buffer y guardar el archivo físico
+        file.seek(0)
+        file.save(ruta_guardada)
+
         file_uploaded = {"nombre": file.filename, "registros": register_proces}
         flash("¡Inventario cargado y analizado con éxito!", "success")
+
+
         session["registros_temporales"] = register_proces
+        session["archivo"] = ruta_guardada 
         return render_template(
             "index.html", file=file_uploaded, version=version, contact=contac
         )
@@ -226,6 +244,69 @@ def send_order():
     return redirect("/")
 
 """
+
+@app.route("/screenshot", methods=["GET"])
+def screenshot():
+    try:
+        ruta_escritorio = os.path.join(os.path.expanduser("~"), "Desktop")
+        nombre_archivo = "captura_flask.png"
+        ruta_final = os.path.join(ruta_escritorio, nombre_archivo)
+
+        ruta_archivo_subido = session.get('archivo')
+        url_actual = request.url_root 
+        parsed_url = urlparse(url_actual)
+        url_base_limpia = f"{parsed_url.scheme}://{parsed_url.netloc}/"
+
+        if not ruta_archivo_subido or not os.path.exists(ruta_archivo_subido):
+            flash("No hay un archivo activo analizado para capturar.", "error")
+            return redirect('/')
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True) 
+            context = browser.new_context(viewport={"width": 1280, "height": 800})
+            page = context.new_page()
+            
+            page.goto(url_base_limpia, wait_until="networkidle")
+
+            page.locator("#fileInput").set_input_files(str(ruta_archivo_subido))
+
+            boton_enviar = page.locator('button[type="submit"], input[type="submit"]')
+            boton_enviar.click()
+
+            page.wait_for_selector("#table", state="visible", timeout=15000)
+
+            page.evaluate("""() => {
+    const btn = document.getElementById('btnSubmit');
+    if (btn) {
+        btn.removeAttribute('disabled');
+        btn.classList.remove('bg-slate-300', 'text-slate-500', 'cursor-not-allowed');
+        btn.classList.add('bg-orange-500', 'text-white', 'cursor-pointer'); // Cambia a tus colores activos si usas otros
+    }
+}""")
+
+            page.add_style_tag(content="""
+                #table th:nth-child(3), #table td:nth-child(3),
+                #table th:nth-child(4), #table td:nth-child(4),
+                #table th:nth-child(5), #table td:nth-child(5),
+                #table th:nth-child(6), #table td:nth-child(6),
+                #table th:nth-child(7), #table td:nth-child(7),
+                #table th:nth-child(8), #table td:nth-child(8) {
+                    display: none !important;
+                }
+            """)
+        
+            tabla = page.locator("#table") 
+            tabla.screenshot(path=ruta_final)
+            browser.close()
+
+            flash("Captura realizada correctamente en tu Escritorio", "success")
+            return redirect('/')
+            
+    except Exception as e:
+        print(f"Error detectado: {str(e)}")
+        flash(f"Error al tomar la captura: {str(e)}", "error")
+        return redirect('/')
+    
 if __name__ == "__main__":
     puerto = int(os.environ.get("PORT", 5000))
     app.run(debug= not is_production, host="0.0.0.0", port=puerto)

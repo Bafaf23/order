@@ -1,0 +1,8 @@
+{% macro button(text, type, hover, onclick, color="slate-950") %}
+  <button
+    type={{type}}
+    onclick ={{onclick}}
+    class="bg-{{color}} p-2 rounded-lg text-white items-center hover:bg-{{hover}} cursor-pointer">
+    {{text}}
+  </button>
+{% endmacro %}
