@@ -1,9 +1,10 @@
 {% extends "_layout.html" %} 
-
+{%import "components/atom/button.html" as atom%}
+{%import "components/atom/link.html" as atoml%}
 {% block content %} 
 
 {% if file %}
-<section>
+<section class="md:hidden lg:hidden w-full">
   <h2 class="text-slate-400 font-bold uppercase mb-2">Archivo procesado</h2>
   <div class="w-full bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
     <div class="flex items-center justify-between">
@@ -18,64 +19,83 @@
           </p>
         </div>
       </div>
-      <a href="/" class="text-xs text-red-500 font-semibold hover:underline"
-        >Eliminar</a
-      >
     </div>
   </div>
 </section>
 
 <section class="mt-5">
-  <form  method="POST" action="/send_order">
-    <div class="flex justify-between mb-2">
-    <input type="hidden" name="contacto" value="{{ contact }}">
-    <input type="hidden" name="data" value="{{ file.registros }}">
-      <h2 class="text-slate-400 font-bold uppercase">Resultado</h2>
-      {%if contact %}
-      <button
-        type="submit"
-        class="bg-slate-950 p-2 rounded-md text-white items-center hover:bg-slate-900"
-        >Enviar pedido</
-      ></button>
-      {%endif%}
+    <div class="flex justify-between items-center mb-2">
+      <div class=" bg-white p-3 rounded-lg border border-zinc-200 shadow w-1/4 hidden md:block lg:block">
+        <h2 class="text-slate-600 font-bold uppercase">Archivo procesado</h2>
+        <div>
+          <span class="text-zinc-800 font-bold hidden md:bloc lg:block">{{file.nombre}}</span>
+          <p class="text-zinc-600 hidden md:bloc lg:block">Productos analisados <span class="font-bold">{{file.registros|length}}</span> </p>
+        </div>
+      </div>
+      <div>
+        {%if contact %}
+          {{ atom.button("Enviar", color="green-600", hover="green-700", onclick="alert('Hola')") }}
+        {%endif%}
+        {{ atom.button("Guardar", color="orange-400", hover="orange-700", onclick="window.location.href='/screenshot'", type="a") }}
+        {{ atom.button("Otro", color="red-600", hover="red-700", onclick="window.location.href='/'", type="a") }}
+      </div>
     </div>
-      <!-- tabla pc -->
-    <div class="overflow-x-auto shadow-md rounded-lg border border-gray-200 my-6 hidden md:block lg:block">
-  <table class="w-full text-sm text-left text-gray-600 border-collapse">
-    <thead class="text-xs text-gray-700 uppercase bg-white border-b border-gray-200">
-      <tr>
-        <th class="px-6 py-4 font-bold">Id y estatus</th>
-        <th class="px-6 py-4 font-bold">Producto</th>
-        <th class="px-6 py-4 font-bold">Promedio Ventas Diario</th>
-        <th class="px-6 py-4 font-bold">Promedio Ventas Semanal</th>
-        <th class="px-6 py-4 font-bold">Tamaño del empaque</th>
-        <th class="px-6 py-4 font-bold">Stock de Seguridad</th>
-        <th class="px-6 py-4 font-bold">Stock de ideal</th>
-        <th class="px-6 py-4 font-bold">Cantidad en mano</th>
-        <!-- Columna destacada con color de fondo sutil -->
-        <th class="px-6 py-4 font-extrabold bg-gray-50 text-gray-900 border-l border-gray-200">Sugerido</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-gray-200">
+    
+    <!-- tabla pc -->
+    <div id="table" class="overflow-x-auto shadow-md rounded-lg border border-gray-200 my-6 hidden md:block lg:block">
+      <table class="w-full text-sm text-left text-gray-600 border-collapse">
+        <thead class="text-xs text-gray-900 uppercase bg-zinc-50 border-b border-gray-200">
+        <tr>
+          <th class="px-6 py-4 font-bold">Id</th>
+          <th class="px-6 py-4 font-bold">Producto</th>
+          <th class="px-6 py-4 font-bold">Promedio Ventas Diario</th>
+          <th class="px-6 py-4 font-bold">Promedio Ventas Semanal</th>
+          <th class="px-6 py-4 font-bold">Tamaño del empaque</th>
+          <th class="px-6 py-4 font-bold">Stock de Seguridad</th>
+          <th class="px-6 py-4 font-bold">Stock de ideal</th>
+          <th class="px-6 py-4 font-bold">Cantidad en mano</th>
+          <th class="px-6 py-4 font-extrabold bg-gray-50 text-emerald-700 border-l border-gray-200">Sugerido</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
       {% for row in file.registros %}
-      <tr class="bg-white hover:bg-gray-50 transition-colors">
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ row.interno }} / {{ row.estatus }}</td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ row.descripcion }}</td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.vp_diaria }}</td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.venta_promedio }}</td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ row.empaque }}</td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.stock_seguridad }}</td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.stock_ideal }}</td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-right">{{ row.cantidad }}</td>
-        <!-- Celda integrada correctamente y destacada visualmente -->
-        <td class="px-6 py-4 font-bold text-indigo-700 bg-indigo-50/30 whitespace-nowrap text-right border-l border-gray-200">
-          {{ row.sugerida_empaque }}
-        </td>
-      </tr>
+      {% set is_zero = row.sugerida_empaque <= 0 %}
+        <tr class="transition-colors {{ 'bg-zinc-100 line-through' if is_zero else 'bg-white hover:bg-gray-50' }}">
+  
+          <td class="px-6 py-4 font-medium {{ 'text-gray-900/50' if is_zero else 'text-gray-900' }} whitespace-nowrap flex flex-col">
+            {{ row.interno }}    
+            <span class="text-xs text-gray-400">
+              {% if row.estatus == 'A' %}
+                Activo
+              {% else %}
+                Descontinuado
+              {% endif %}
+            </span>
+          </td>
+          <td class="px-6 py-4 font-bold {{ 'text-gray-900/50' if is_zero else 'text-gray-900' }} whitespace-nowrap">{{ row.descripcion }}</td>
+
+          <td class="px-6 py-4 font-bold text-center {{ 'text-slate-700/50' if is_zero else 'text-slate-700' }} whitespace-nowrap text-right">{{ row.vp_diaria }}</td>
+
+          <td class="px-6 py-4 font-bold text-center {{ 'text-indigo-600/50' if is_zero else 'text-indigo-600' }} whitespace-nowrap text-right">{{ row.venta_promedio }}</td>
+        
+          <td class="px-6 py-4 font-medium text-center {{ 'text-gray-600/50' if is_zero else 'text-gray-600' }} whitespace-nowrap">{{ row.empaque }}</td>
+
+          <td class="px-6 py-4 font-bold {{ 'text-amber-600/50' if is_zero else 'text-amber-600' }} whitespace-nowrap text-right">{{ row.stock_seguridad }}</td>
+
+          <td class="px-6 py-4 font-bold {{ 'text-cyan-700/50' if is_zero else 'text-cyan-700' }} whitespace-nowrap text-right">{{ row.stock_ideal }}</td>
+
+          <td class="px-6 py-4 font-bold {{ 'text-gray-900/50' if is_zero else 'text-gray-900' }} whitespace-nowrap text-right">{{ row.cantidad }}</td>
+
+          <td class="px-6 py-4 font-bold {{ 'text-rose-700/50' if is_zero else 'text-emerald-700 bg-emerald-50/50' }} whitespace-nowrap text-right border-l border-gray-200">
+          <input type="text" value="{{row.sugerida_empaque}}" class="w-20 px-2 py-1 text-right font-bold text-sm rounded-md transition-all 
+            {{ 'text-rose-700/60 bg-white border border-rose-200 focus:ring-2 focus:ring-rose-500' if is_zero 
+              else 'text-emerald-700 bg-white border border-emerald-300 focus:ring-2 focus:ring-emerald-500' }}">
+          </td>
+        </tr>
       {% endfor %}
-    </tbody>
-  </table>
-</div>
+        </tbody>
+      </table>
+    </div>
 
 
     <!-- card movil -->
@@ -318,18 +338,15 @@
       </div>
       {% endfor %}
     </div>
-  </form>
 </section>
-
 {% else %}
 <form
   id="uploadForm"
   action="/upload"
   method="POST"
   enctype="multipart/form-data"
-  class="w-full flex flex-col"
->
-  <input
+  class="md:w-150 lg:w-150 w-full flex flex-col">
+    <input
     type="file"
     id="fileInput"
     name="file"
@@ -340,7 +357,7 @@
   <div
     id="dropzone"
     onclick="document.getElementById('fileInput').click()"
-    class="flex flex-col items-center justify-center border-2 border-dashed border-slate-400 bg-slate-100 p-8 rounded-lg w-full mx-auto transition-all duration-200 hover:border-orange-500 hover:bg-orange-50 cursor-pointer group"
+    class="flex flex-col items-center justify-center border-2 border-dashed border-slate-400 bg-slate-100 p-8 rounded-lg w-full transition-all duration-200 hover:border-orange-500 hover:bg-orange-50 cursor-pointer group"
   >
     <span
       id="uploadIcon"
@@ -386,4 +403,5 @@
     </button>
   </div>
 </form>
-{% endif %} {% endblock %}
+{% endif %}
+{% endblock %}
