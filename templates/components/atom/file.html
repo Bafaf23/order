@@ -1,0 +1,39 @@
+{%import "components/atom/button.html" as atom%}
+{%import "components/atom/link.html" as atoml%} 
+
+{% macro file(file) %}
+  <div class="bg-white border border-slate-200/80 rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+
+  <div class="flex items-start gap-4">
+    <!-- Icono del archivo con badge o spinner -->
+    <div class="relative flex-shrink-0 rounded-lg border border-orange-500/20 bg-orange-500/10 p-3 text-orange-400">
+      <i class="fa-regular fa-file-lines"></i>
+    </div>
+
+    <!-- Detalles del archivo -->
+    <div class="">
+      <div class="mb-1 flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-600 uppercase tracking-wide">
+            Procesando
+          </span>
+          <span class="text-xs text-slate-400">• {{file.registros|length}} Productos analizados</span>
+      </div>
+
+      <!-- Nombre del archivo con truncado automático para no romperse si es largo -->
+      <h3 class="text-base font-bold text-slate-800 mt-0.5" title="{{  file.nombre }}">
+        {{ file.nombre }}
+      </h3>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-2.5">
+    {{ atom.button(text="Enviar",color="green-600", hover="green-700",
+        onclick="alert('Esta funcion esta en desarrollo')", icon="fa-solid fa-paper-plane", title="Enviar")
+        }}
+    {{ atom.button( text="Otro", color="orange-600", hover="orange-700",
+        onclick="window.location.href='/'", type="button", icon="fa-solid
+        fa-upload", title="Subir otro archivo" ) }}
+  </div>
+</div>
+
+{% endmacro %}

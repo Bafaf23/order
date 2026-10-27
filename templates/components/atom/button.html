@@ -7,10 +7,10 @@
   title="{{title}}"
   type="{{ type }}"
   onclick="{{ onclick }}"
-  class="bg-{{ color }} p-2 rounded-lg text-white items-center hover:bg-{{ hover }} cursor-pointer inline-flex"
+  class="bg-{{ color }} p-2 rounded-lg text-white items-center hover:bg-{{ hover }} cursor-pointer inline-flex items-center font-semibold px-4 py-2 text-xs gap-2"
 >
   {% if icon %}
-    <i class="{{ icon }} text-lg mr-1.5"></i>
+    <i class="{{ icon }}"></i>
   {% endif %} {% if text %}
     <span>{{ text }}</span>
   {% endif %}
