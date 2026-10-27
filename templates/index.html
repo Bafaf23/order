@@ -1,64 +1,13 @@
 {% extends "_layout.html" %} 
-{%import "components/atom/button.html" as atom%}
-{%import "components/atom/link.html" as atoml%} 
+
+{%import "components/atom/file.html" as filatom%}}
 
 {% block content %} 
 
-{% if file%}
-<section class="md:hidden lg:hidden w-full">
-  <h2 class="text-slate-400 font-bold uppercase mb-2">Archivo procesado</h2>
-  <div class="w-full bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <i class="fa-solid fa-file-excel text-emerald-600 text-2xl"></i>
-        <div>
-          <p class="font-bold text-slate-800 w-45 truncate">
-            {{ file.nombre }}
-          </p>
-          <p class="text-xs text-slate-500">
-            {{ file.registros|length }} items encontrados
-          </p>
-        </div>
-      </div>
-      <div class="flex md:hidden lg:hidden gap-3">
-        {%if contact %} 
-        {{ atom.button(color="green-600", hover="green-700",
-        onclick="alert('Esta funcion esta en desarrollo')", icon="fa-solid fa-paper-plane", title="Enviar")
-        }} {%endif%} 
-        {{ atom.button( color="red-600", hover="red-700",
-        onclick="window.location.href='/'", type="button", icon="fa-solid
-        fa-upload", title="Subir otro archivo" ) }}
-      </div>
-    </div>
-  </div>
-</section>
-
+{% if file %}
 <section class="mt-5">
-  <div class="flex justify-between items-center mb-2">
-    <div
-      class="bg-white p-3 rounded-2xl border border-zinc-200 shadow w-1/4 hidden md:block lg:block"
-    >
-      <h2 class="text-slate-600 font-bold uppercase">Archivo procesado</h2>
-      <div>
-        <span class="text-zinc-800 font-bold hidden md:bloc lg:block"
-          >{{file.nombre}}</span
-        >
-        <p class="text-zinc-600 hidden md:bloc lg:block">
-          Productos analisados
-          <span class="font-bold">{{file.registros|length}}</span>
-        </p>
-      </div>
-    </div>
-    <div class="hidden md:flex lg:flex gap-3 ">
-      {%if contact %} 
-        {{ atom.button(color="green-600", hover="green-700",
-        onclick="alert('Esta funcion esta en desarrollo')", icon="fa-solid fa-paper-plane", title="Enviar")
-        }}
-      {%endif%} 
-      {{ atom.button(
-      color="red-600", hover="red-700", onclick="window.location.href='/'",
-      type="button", icon="fa-solid fa-upload", title="Subir otro archivo" ) }}
-    </div>
+  <div class="mb-2">
+    {{filatom.file(file)}}
   </div>
 
   <!-- tabla pc -->
@@ -68,17 +17,17 @@
   >
     <table class="w-full text-sm text-left text-gray-600 border-collapse">
       <thead
-        class="text-xs text-gray-900 uppercase bg-zinc-50 border-b border-gray-200"
+        class="text-xs text-gray-900 uppercase bg-zinc-50 border-b border-gray-200 tracking-wider"
       >
         <tr>
           <th class="px-6 py-4 font-bold">Id</th>
           <th class="px-6 py-4 font-bold">Producto</th>
-          <th class="px-6 py-4 font-bold">Promedio Ventas Diario</th>
-          <th class="px-6 py-4 font-bold">Promedio Ventas Semanal</th>
-          <th class="px-6 py-4 font-bold">Tamaño del empaque</th>
-          <th class="px-6 py-4 font-bold">Stock de Seguridad</th>
+          <th class="px-6 py-4 font-bold">Ventas Diario</th>
+          <th class="px-6 py-4 font-bold">Ventas Semanal</th>
+          <th class="px-6 py-4 font-bold">Empaque</th>
+          <th class="px-6 py-4 font-bold">Stock de seg</th>
           <th class="px-6 py-4 font-bold">Stock de ideal</th>
-          <th class="px-6 py-4 font-bold">Cantidad en mano</th>
+          <th class="px-6 py-4 font-bold">En mano</th>
           <th
             class="px-6 py-4 font-extrabold bg-gray-50 text-emerald-700 border-l border-gray-200"
           >
