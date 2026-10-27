@@ -4,11 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {# Google adSense#}
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1870514779366190"
-    crossorigin="anonymous"></script>
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1870514779366190"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- Tailwind CSS v4 Browser Build -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    {# alpinejs #}
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
 
     <!-- FontAwesome -->
     <script
@@ -29,35 +37,39 @@
       href="{{ url_for('static', filename='favicon.svg') }}"
     />
     <title>{% block title %}Order{% endblock %}</title>
-    
   </head>
   <body
-    class="bg-gray-100 min-h-dvh max-w-xl md:max-w-7xl  mx-auto flex flex-col items-center py-6 px-4 relative"
+    class="bg-gray-100 min-h-dvh max-w-xl md:max-w-7xl mx-auto flex flex-col items-center py-6 px-4 relative"
   >
-  
-    <header class="w-full flex flex-col md:flex-row md:justify-between gap-2 bg-white rounded-2xl p-4 shadow border border-zinc-200">
+    <header
+      class="w-full flex flex-col md:flex-row md:justify-between gap-2 bg-white rounded-2xl p-4 shadow border border-zinc-200"
+    >
       <div class="flex justify-between">
         <div class="flex items-center gap-2">
           <img
-          src="{{ url_for('static', filename='favicon.svg') }}"
-          alt="Logo de ORDER"
-          class="w-8 h-8 object-contain"/>
+            src="{{ url_for('static', filename='favicon.svg') }}"
+            alt="Logo de ORDER"
+            class="w-8 h-8 object-contain"
+          />
           <div class="flex flex-col">
             <div class="flex items-center gap-1">
-              <h1 class="text-2xl font-bold tracking-wide text-slate-800">ORDER</h1>
-                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
-                  v{{ version }}
-                </span>
+              <h1 class="text-2xl font-bold tracking-wide text-slate-800">
+                ORDER
+              </h1>
             </div>
             <p class="text-xs text-slate-400">Sugeridos de Compra</p>
           </div>
         </div>
 
-        <a download href="{{url_for('static', filename='docs/analisis_OC.xlsx')}}" class="text-sm text-white hover:text-gray-200 font-medium bg-slate-900 p-2 rounded-md transition-colors md:hidden lg:hidden h-fit">
+        <a
+          download
+          href="{{url_for('static', filename='docs/analisis_OC.xlsx')}}"
+          class="text-sm text-white hover:text-gray-200 font-medium bg-slate-900 p-2 rounded-md transition-colors md:hidden lg:hidden h-fit"
+        >
           Descargar Guia
         </a>
       </div>
-      
+
       <nav>
         <ul class="flex items-center justify-between gap-4 mt-2 md:mt-0">
           <li>
@@ -68,58 +80,70 @@
               ¿Qué es ORDER?
             </button>
           </li>
-          <li class="text-sm text-white hover:text-gray-200 font-medium bg-slate-900 p-2 rounded-md transition-colors hidden md:block lg:block">
-              <a download href="{{url_for('static', filename='docs/analisis_OC.xlsx')}}">
-                Descargar Guia
-              </a>
-            </li>
+          <li
+            class="text-sm text-white hover:text-gray-200 font-medium bg-slate-900 p-2 rounded-md transition-colors hidden md:block lg:block"
+          >
+            <a
+              download
+              href="{{url_for('static', filename='docs/analisis_OC.xlsx')}}"
+            >
+              Descargar Guia
+            </a>
+          </li>
         </ul>
       </nav>
     </header>
-    
+
     <!--Alert-->
     <div class="max-w-7xl mx-auto px-6 mt-4 absolute" id="alert">
-      {% with messages = get_flashed_messages(with_categories=true) %} 
-        {% if messages %} 
-          {% for category, message in messages %} 
-            {% if category == 'success' %}
-              <!-- Alerta Verde para éxitos -->
-              <div class="flex items-center gap-3 p-4 mb-4 text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm">
-                <i class="fa-solid fa-circle-check text-xl text-emerald-600"></i>
-                <span class="text-sm font-medium">{{ message }}</span>
-              </div>
-            {% else %}
-              <!-- Alerta Roja para errores -->
-              <div class="flex items-center gap-3 p-4 mb-4 text-rose-800 bg-rose-50 border border-rose-200 rounded-lg shadow-sm">
-                <i class="fa-solid fa-circle-exclamation text-xl text-rose-600"></i>
-                <span class="text-sm font-medium">{{ message }}</span>
-              </div>
-            {% endif %} 
-          {% endfor %} 
-        {% endif %} 
-      {% endwith %}
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %} {% if category ==
+      'success' %}
+      <!-- Alerta Verde para éxitos -->
+      <div
+        class="flex items-center gap-3 p-4 mb-4 text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg shadow-sm"
+      >
+        <i class="fa-solid fa-circle-check text-xl text-emerald-600"></i>
+        <span class="text-sm font-medium">{{ message }}</span>
+      </div>
+      {% else %}
+      <!-- Alerta Roja para errores -->
+      <div
+        class="flex items-center gap-3 p-4 mb-4 text-rose-800 bg-rose-50 border border-rose-200 rounded-lg shadow-sm"
+      >
+        <i class="fa-solid fa-circle-exclamation text-xl text-rose-600"></i>
+        <span class="text-sm font-medium">{{ message }}</span>
+      </div>
+      {% endif %} {% endfor %} {% endif %} {% endwith %}
     </div>
-    {% include "_loading.html" %}
-    {% include "page/_modal.html" %}
-    <main class="flex flex-1 flex-col h-full w-full my-6 justify-center items-center">
-      {% block content %}
-      {% endblock %}
+    {% include "_loading.html" %} {% include "page/_modal.html" %}
+    <main
+      class="flex flex-1 flex-col h-full w-full my-6 justify-center items-center"
+    >
+      {% block content %} {% endblock %}
     </main>
 
-    <footer class="w-full text-center text-xs text-slate-400 flex items-center justify-between pt-4 border-t border-slate-200">
-      <p>
-        Desarrollado por
+    <footer
+      class="w-full text-xs text-slate-400 flex items-center justify-between pt-4 border-t border-slate-200 bg-slate-950 p-5 rounded-2xl"
+    >
+      <div>
+        <p class="text-slate-300">Desarrollado por</p>
         <a
           href="https://www.instagram.com/bafaf03/"
           target="_blank"
-          class="font-bold text-slate-600 hover:text-slate-800 hover:underline transition-colors"
+          class="font-bold text-slate-100 hover:text-slate-300 hover:underline transition-colors"
           rel="noopener noreferrer"
           >Bryant Facenda</a
         >
-      </p>
+      </div>
+      <span
+        class="rounded-full bg-slate-400/30 px-2 py-0.5 text-xs font-medium text-slate-200"
+      >
+        v{{ version }}
+      </span>
       <button
         type="button"
-        class="bg-emerald-500 hover:bg-emerald-600 text-white font-medium px-3 py-1.5 rounded-md transition-colors shadow-sm cursor-pointer"
+        class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3 py-1.5 rounded-md transition-colors shadow-sm cursor-pointer"
       >
         <i class="fa-regular fa-lightbulb mr-1.5"></i>
         Sugerencia
@@ -129,7 +153,7 @@
     <!-- ==================== SECCIÓN DE SCRIPTS ==================== -->
     <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-    
+
     <script>
       setTimeout(() => {
         const alert = document.getElementById("alert");
