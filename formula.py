@@ -1,6 +1,5 @@
 import math
 
-
 def average_weekly_sales(sales_week: list) -> dict:
     """
     Calcula el promedio de las ventas semanales de un producto.
