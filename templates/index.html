@@ -6,7 +6,7 @@
       <div class="mb-2">{{ filatom.file(file) }}</div>
       <!-- tabla pc -->
       <div id="table"
-           class="overflow-x-auto shadow-md rounded-lg border border-gray-200 dark:border-zinc-800 my-6 hidden md:hidden lg:block">
+           class="overflow-x-auto shadow-md rounded-lg border border-gray-200 dark:border-zinc-800 my-6 hidden md:hidden lg:block transition delay-150 duration-300 ease-in-out">
         <table class="w-full text-sm text-left dark:text-zinc-200 text-gray-600 border-collapse">
           <thead class="text-xs dark:text-zinc-200 text-gray-900 uppercase bg-zinc-50 dark:bg-zinc-900 border-b dark:border-zinc-800 border-gray-200 tracking-wider">
             <tr>
@@ -63,7 +63,7 @@
       <!-- card movil -->
       <div class="flex flex-col gap-2 md:flex lg:hidden my-6">
         {% for row in file.registros %}
-          <div class="mb-3 w-full rounded-lg border border-slate-200 bg-white dark:bg-zinc-800 dark:border-zinc-700 p-4 shadow-sm transition-colors hover:border-slate-300 hover:dark:border-zinc-600">
+          <div class="mb-3 w-full rounded-lg border border-slate-200 bg-white dark:bg-zinc-800 dark:border-zinc-700 p-4 shadow-sm transition-colors hover:border-slate-300 hover:dark:border-zinc-600 transition delay-150 duration-300 ease-in-out">
             <!-- Tarjeta principal de producto -->
             <div class="flex flex-col justify-between gap-3 rounded-lg select-none p-1 sm:flex-row sm:items-center">
               <div class="flex min-w-0 items-start gap-3">
