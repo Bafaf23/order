@@ -93,3 +93,11 @@ form.addEventListener("submit", () => {
   loader.classList.remove("hidden");
   loader.classList.add("flex");
 });
+
+/**
+ * Controlador pora el modo escuro
+ */
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+}
