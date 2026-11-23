@@ -22,7 +22,7 @@
     {# FontAwesome #}
     <script src="https://kit.fontawesome.com/a74559d35e.js"
             crossorigin="anonymous"></script>
-    {#  Global CSS con url_for #}
+    {# Global CSS con url_for #}
     <link rel="stylesheet"
           href="{{ url_for('static', filename='global.css') }}" />
     {# Favicon #}
@@ -54,7 +54,9 @@
             Descargar Guia
           </a>
           <div class="lg:hidden md:hidden">
-            {{ atom.button(icon="fa-solid fa-sun text-indigo-500", color="indigo-600/40", type="button", onclick="toggleTheme()", title="Cambiar entre modo claro y oscuro", loading=false) }}
+            {{ atom.button(icon="fa-solid fa-palette",
+              color="bg-indigo-600 dark:bg-amber-500 transition-colors", type="button", onclick="toggleTheme()",
+              title="Cambiar entre modo claro y oscuro", loading=false) }}
           </div>
         </div>
       </div>
@@ -72,7 +74,10 @@
                href="{{ url_for('static', filename='docs/analisis_OC.xlsx') }}">Descargar Guia</a>
           </li>
           <li class="hidden md:block lg:block">
-            {{ atom.button(icon="fa-solid fa-sun text-indigo-500", color="indigo-600/40", type="button", onclick="toggleTheme()", title="Cambiar entre modo claro y oscuro", loading=false) }}
+            {{ atom.button(icon="fa-solid fa-palette",
+              color="dark:bg-amber-600 bg-indigo-600 text-lg", type="button",
+              onclick="toggleTheme()", title="Cambiar entre modo claro y oscuro",
+              loading=false) }}
           </li>
         </ul>
       </nav>
