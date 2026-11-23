@@ -1,4 +1,4 @@
-{% macro button(text, id, type, hover, onclick, title, icon=None, color="slate-950", loading=True) %}
+{% macro button(text, id, type, hover, onclick, title, icon=None, color="bg-slate-950", loading=True) %}
   <div x-data="{loading: false}">
     <button {% if loading %} @click="loading = true" :disabled="loading" {% endif %}
             id="{{ id }}"
@@ -6,7 +6,7 @@
             {% if title %} aria-label="{{ title }}" {% endif %}
             type="{{ type }}"
             onclick="{{ onclick }}"
-            class="{{ color }} p-2 rounded-md text-white {{ hover }} cursor-pointer flex items-center justify-center font-medium text-xs gap-2 w-full h-full text-center">
+            class="{{ color }} p-2 rounded-md text-white {{ hover }} cursor-pointer flex items-center justify-center font-medium gap-2 w-full h-full text-center">
       {% if icon %}
         <i class="{{ icon }}"></i>
       {% endif %}
